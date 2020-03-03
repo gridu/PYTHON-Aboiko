@@ -1,4 +1,4 @@
-import config
+
 from flask import *
 from models.specie import *
 

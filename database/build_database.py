@@ -1,15 +1,10 @@
 import os
 
-from flask_sqlalchemy import SQLAlchemy
-
-import settings
+from database import db
 from models.center import Center
 from models.animal import Animal
 from models.specie import Specie
 
-
-app.config.from_object(Config)
-db = SQLAlchemy(app)
 
 # Data to initialize database with
 CENTER = [
