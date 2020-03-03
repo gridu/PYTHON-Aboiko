@@ -1,17 +1,23 @@
 import json
+from flask import jsonify
+from config import *
 
-from config import db
 
 def add_spicie(_name, _price, _description):
     new_specie = Specie(name=_name, price=_price, description=_description)
     db.session.add(new_specie)
     db.session.commit()
 
+
 def get_specie(_spicie_id):
     return Specie.query.filter_by(spicie_id=_spicie_id).first()
 
+def make_json(self):
+    return {'spicie_id': self.spicie_id, 'name': self.name, 'price': self.price, 'description': self.description}
+
 def get_all_species():
-    return Specie.query.all()
+    return [make_json(specie) for specie in Specie.query.all()]
+
 
 class Specie(db.Model):
     __tablename__ = "specie"
@@ -26,7 +32,6 @@ class Specie(db.Model):
             'name': self.name,
             'price': self.price,
             'description': self.description,
-
 
         }
         return json.dumps(spicie_object)
