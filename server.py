@@ -1,13 +1,21 @@
 # Local modules
+from flask import Flask
+
 from settings import app
 
 
-# if __name__ == "__main__":
-#     app.run(debug=True)
+def create_app():
+    #from . import models
+    from app import routes
+    app1 = Flask(__name__)
+    #models.init_app(app)
+    #routes.init_app(app)
+    return app1
 
-@app.route('/index')
-def index():
-    return "Hello, World!"
 
+app = create_app()
 
-app.run(port=5000)
+if __name__ == "__main__":
+    app.run(debug=True)
+
+# app.run(port=5000)

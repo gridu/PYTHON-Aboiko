@@ -1,6 +1,6 @@
 from settings import app
 
 
-@app.route('/hello')
+@app.route('/index')
 def index():
     return "Hello, World!"
