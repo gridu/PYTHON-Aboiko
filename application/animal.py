@@ -12,6 +12,7 @@ def make_json(self):
         'specie': self.specie
     }
 
+
 class Animal(db.Model):
     __tablename__ = "animal"
     id = db.Column(db.Integer, primary_key=True)
@@ -30,6 +31,16 @@ class Animal(db.Model):
         }
         return json.dumps(animal_object)
 
+    # def __init__(self, _center_id, _name, _age, _specie):
+    #     self.center_id = _center_id
+    #     self.name = _name
+    #     self.age = _age
+    #     self.specie = _specie
+    #
+    # def __init__(self, _name, _age, _specie):
+    #     self.name = _name
+    #     self.age = _age
+    #     self.specie = _specie
 
 def get_all_animals():
     return [make_json(animal) for animal in Animal.query.all()]
@@ -57,7 +68,7 @@ def update_animal(_animal_id, animal):
     existed_animal = Animal.query.filter_by(id=_animal_id).first()
     existed_animal.name = animal.name
     existed_animal.age = animal.age
-    existed_animal.spicie = animal.spicie
+    existed_animal.specie = animal.specie
     existed_animal.center_id = animal.center_id
     db.session.add(existed_animal)
     db.session.commit()

@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, Response
 
-from application.animal import get_all_animals, get_animal, add_animal
+from application.animal import get_all_animals, get_animal, add_animal, update_animal, Animal, delete_animal
 from application.center import get_all_centers, get_center, add_center
 from application.specie import get_all_species, get_specie, add_specie
 from application import app
@@ -64,3 +64,19 @@ def get_animals():
 def get_one_animal(animal_id):
     if request.method == 'GET':
         return jsonify({'animal': get_animal(animal_id)})
+    elif request.method == 'PUT':
+        request_data = request.get_json()
+        new_animal = Animal()
+        new_animal.center_id = request_data['center_id']
+        new_animal.name = request_data['name']
+        new_animal.age = request_data['age']
+        new_animal.specie = request_data['specie']
+        update_animal(animal_id, new_animal)
+        response = Response("", status=201, mimetype='application/json')
+        response.headers['Location'] = "/animals/" + str(animal_id)
+        return response
+    elif request.method == 'DELETE':
+        delete_animal(animal_id)
+        response = Response("", status=201, mimetype='application/json')
+        response.headers['Location'] = "/animals/" + str(animal_id)
+        return response
