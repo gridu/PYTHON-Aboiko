@@ -1,6 +1,5 @@
 from models.center import *
 from models.animal import *
-from models.specie import *
 
 #add_center("Center10007", "pas", "address")
 print(get_all_centers())

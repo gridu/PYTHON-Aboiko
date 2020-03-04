@@ -1,8 +1,16 @@
 import json
+from . import db
+from .center import Center
 
-from models import db
-from models.center import Center
 
+def make_json(self):
+    return {
+        'id': self.id,
+        'center_id': self.center_id,
+        'name': self.name,
+        'age': self.age,
+        'specie': self.specie
+    }
 
 class Animal(db.Model):
     __tablename__ = "animal"
@@ -10,21 +18,21 @@ class Animal(db.Model):
     center_id = db.Column(db.Integer, db.ForeignKey("center.id"))
     name = db.Column(db.String, nullable=False)
     age = db.Column(db.Integer, nullable=False)
-    spicie = db.Column(db.String, nullable=True)
+    specie = db.Column(db.String, nullable=True)
 
     def __repr__(self):
         animal_object = {
             'center_id': self.center_id,
             'name': self.name,
             'age': self.age,
-            'spicie': self.spicie,
+            'specie': self.specie,
             'id': self.animal_id
         }
         return json.dumps(animal_object)
 
 
 def get_all_animals():
-    return Animal.query.all()
+    return [make_json(animal) for animal in Animal.query.all()]
 
 
 def delete_animal(_animal_id):

@@ -1,10 +1,18 @@
 import json
-#from models.animal import Animal
-from models import db
+#from .animal import Animal
+from . import db
+
+
+def make_json(self):
+    return {
+        'id': self.id,
+        'login': self.login,
+        'address': self.address
+    }
 
 
 def get_all_centers():
-    return Center.query.all()
+    return [make_json(center) for center in Center.query.all()]
 
 
 def get_center(_center_id):
