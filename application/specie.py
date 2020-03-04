@@ -11,7 +11,7 @@ def add_specie(_name, _price, _description):
 
 
 def get_specie(_specie_id):
-    return Specie.query.filter_by(spicie_id=_specie_id).first()
+    return Specie.make_json(Specie.query.filter_by(id=_specie_id).first())
 
 
 def get_all_species():
@@ -20,14 +20,14 @@ def get_all_species():
 
 class Specie(db.Model):
     __tablename__ = "specie"
-    specie_id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String, nullable=False)
 
     def __repr__(self):
         specie_object = {
-            'specie_id': self.specie_id,
+            'specie_id': self.id,
             'name': self.name,
             'price': self.price,
             'description': self.description,
@@ -36,7 +36,7 @@ class Specie(db.Model):
         return json.dumps(specie_object)
 
     def make_json(self):
-        return {'specie_id': self.specie_id,
+        return {'specie_id': self.id,
                 'name': self.name,
                 'price': self.price,
                 'description': self.description}

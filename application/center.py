@@ -16,13 +16,14 @@ def get_all_centers():
 
 
 def get_center(_center_id):
-    return Center.query.filter_by(id=_center_id).first()
+    return make_json(Center.query.filter_by(id=_center_id).first())
 
 
 def add_center(_login, _password, _address):
     new_center = Center(login=_login, password=_password, address=_address)
     db.session.add(new_center)
     db.session.commit()
+    return make_json(new_center)
 
 
 class Center(db.Model):
