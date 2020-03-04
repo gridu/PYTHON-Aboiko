@@ -3,7 +3,6 @@ from flask import Blueprint, jsonify, request, Response
 from application.animal import get_all_animals, get_animal, add_animal, update_animal, Animal, delete_animal
 from application.center import get_all_centers, get_center, add_center
 from application.specie import get_all_species, get_specie, add_specie
-from application import app
 
 centers = Blueprint('centers', __name__)
 
@@ -33,14 +32,13 @@ def get_one_center(center_id):
 
 @species.route('/species', methods=['POST', 'GET'])
 def get_species():
-    if request.method == 'GET':
-        return jsonify({'species': get_all_species()})
-    elif request.method == 'POST':
+    if request.method == 'POST':
         request_data = request.get_json()
         add_specie(request_data['name'], request_data['price'], request_data['description'])
         response = Response("", status=201, mimetype='application/json')
         response.headers['Location'] = "/species/" + "id"
         return response
+    return jsonify({'species': get_all_species()})
 
 
 @species.route('/species/<int:specie_id>')
@@ -50,21 +48,18 @@ def get_one_specie(specie_id):
 
 @animals.route('/animals', methods=['GET', 'POST'])
 def get_animals():
-    if request.method == 'GET':
-        return jsonify({'animals': get_all_animals()})
-    elif request.method == 'POST':
+    if request.method == 'POST':
         request_data = request.get_json()
         add_animal(request_data['center_id'], request_data['name'], request_data['age'], request_data['specie'])
         response = Response("", status=201, mimetype='application/json')
         response.headers['Location'] = "/animals/" + "id"
         return response
+    return jsonify({'animals': get_all_animals()})
 
 
 @animals.route('/animals/<int:animal_id>', methods=['GET', 'DELETE', 'PUT'])
 def get_one_animal(animal_id):
-    if request.method == 'GET':
-        return jsonify({'animal': get_animal(animal_id)})
-    elif request.method == 'PUT':
+    if request.method == 'PUT':
         request_data = request.get_json()
         new_animal = Animal()
         new_animal.center_id = request_data['center_id']
@@ -80,3 +75,4 @@ def get_one_animal(animal_id):
         response = Response("", status=201, mimetype='application/json')
         response.headers['Location'] = "/animals/" + str(animal_id)
         return response
+    return jsonify({'animal': get_animal(animal_id)})

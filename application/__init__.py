@@ -12,6 +12,7 @@ app = Flask(__name__)
 
 from application.build_database import db_load_example_data
 
+
 def create_app():
     app.config.from_object('settings.Config')
 
