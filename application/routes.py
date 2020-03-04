@@ -1,8 +1,8 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, Response
 
-from application.animal import get_all_animals, get_animal
-from application.center import get_all_centers, get_center
-from application.specie import get_all_species, get_specie
+from application.animal import get_all_animals, get_animal, add_animal
+from application.center import get_all_centers, get_center, add_center
+from application.specie import get_all_species, get_specie, add_specie
 from application import app
 
 centers = Blueprint('centers', __name__)
@@ -17,9 +17,13 @@ def get_centers():
     return jsonify({'centers': get_all_centers()})
 
 
-@centers.route('/centers', methods=['POST'])
-def add_center():
+@centers.route('/register', methods=['POST'])
+def register():
     request_data = request.get_json()
+    add_center(request_data['login'], request_data['password'], request_data['address'])
+    response = Response("", status=201, mimetype='application/json')
+    response.headers['Location'] = "/centers/" + "id"
+    return response
 
 
 @centers.route('/centers/<int:center_id>')
@@ -27,9 +31,16 @@ def get_one_center(center_id):
     return jsonify({'center': get_center(center_id)})
 
 
-@species.route('/species')
+@species.route('/species', methods=['POST', 'GET'])
 def get_species():
-    return jsonify({'species': get_all_species()})
+    if request.method == 'GET':
+        return jsonify({'species': get_all_species()})
+    elif request.method == 'POST':
+        request_data = request.get_json()
+        add_specie(request_data['name'], request_data['price'], request_data['description'])
+        response = Response("", status=201, mimetype='application/json')
+        response.headers['Location'] = "/species/" + "id"
+        return response
 
 
 @species.route('/species/<int:specie_id>')
@@ -37,11 +48,19 @@ def get_one_specie(specie_id):
     return jsonify({'specie': get_specie(specie_id)})
 
 
-@animals.route('/animals')
+@animals.route('/animals', methods=['GET', 'POST'])
 def get_animals():
-    return jsonify({'animals': get_all_animals()})
+    if request.method == 'GET':
+        return jsonify({'animals': get_all_animals()})
+    elif request.method == 'POST':
+        request_data = request.get_json()
+        add_animal(request_data['center_id'], request_data['name'], request_data['age'], request_data['specie'])
+        response = Response("", status=201, mimetype='application/json')
+        response.headers['Location'] = "/animals/" + "id"
+        return response
 
 
-@animals.route('/animals/<int:animal_id>')
+@animals.route('/animals/<int:animal_id>', methods=['GET', 'DELETE', 'PUT'])
 def get_one_animal(animal_id):
-    return jsonify({'animal': get_animal(animal_id)})
+    if request.method == 'GET':
+        return jsonify({'animal': get_animal(animal_id)})

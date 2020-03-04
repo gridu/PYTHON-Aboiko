@@ -47,7 +47,7 @@ def get_animal(_animal_id):
 
 def add_animal(_center_id, _name, _age, _specie):
     r_center = Center.query.filter(Center.id == _center_id).one_or_none()
-    new_animal = Animal(center=r_center, name=_name, age=_age, spicie=_specie)
+    new_animal = Animal(center=r_center, name=_name, age=_age, specie=_specie)
 
     db.session.add(new_animal)
     db.session.commit()
