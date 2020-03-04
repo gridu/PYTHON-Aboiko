@@ -1,5 +1,5 @@
 import json
-from . import db
+from application import db
 from .center import Center
 
 

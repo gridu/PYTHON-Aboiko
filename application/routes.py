@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify
 from application.animal import get_all_animals
 from application.center import get_all_centers
 from application.specie import get_all_species
+from application import app
 
 centers = Blueprint('centers', __name__)
 

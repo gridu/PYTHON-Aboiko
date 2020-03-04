@@ -1,6 +1,6 @@
 import os
 
-from . import db
+# from . import db, create_app
 from application.animal import Animal
 from application.center import Center
 from application.specie import Specie
@@ -54,12 +54,10 @@ def db_load_example_data(app, db):
             }
         ]
 
-
-
         # iterate over the CENTER structure and populate the database
         for center in CENTER:
             c = Center(login=center.get("login"), password=center.get("password"),
-                       address=center.get("address"))
+                                   address=center.get("address"))
 
             for animal in center.get("animals"):
                 name, age, specie = animal
@@ -74,7 +72,13 @@ def db_load_example_data(app, db):
 
         for specie in SPECIE:
             s = Specie(name=specie.get("name"), price=specie.get("price"),
-                       description=specie.get("description"))
+                                   description=specie.get("description"))
             db.session.add(s)
 
         db.session.commit()
+
+
+# if __name__ == "__main__":
+#     app = create_app()
+#     dat = db
+#     db_load_example_data(app, db)

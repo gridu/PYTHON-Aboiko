@@ -3,12 +3,12 @@ import sys
 from flask import Flask
 import configparser
 import os
-assert os.path.exists('/home/a/PycharmProjects/animals3/config.ini')
+assert os.path.exists('config.ini')
 
 app = Flask(__name__)
 
 parser = configparser.ConfigParser()
-parser.read('/home/a/PycharmProjects/animals3/config.ini')
+parser.read('config.ini')
 
 
 class Config:

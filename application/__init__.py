@@ -6,13 +6,13 @@ from flask_sqlalchemy import SQLAlchemy
 # from application.animal import Animal
 # from application.center import Center
 # from application.specie import Specie
-from application.build_database import db_load_example_data
 
 db = SQLAlchemy()
+app = Flask(__name__)
 
+from application.build_database import db_load_example_data
 
 def create_app():
-    app = Flask(__name__)
     app.config.from_object('settings.Config')
 
     db.init_app(app)
