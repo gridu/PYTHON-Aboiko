@@ -1,6 +1,7 @@
 import json
 from flask import jsonify
-from config import *
+
+from models import db
 
 
 def add_spicie(_name, _price, _description):

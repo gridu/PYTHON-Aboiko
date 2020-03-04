@@ -1,6 +1,6 @@
-from config import db
 import json
 #from models.animal import Animal
+from models import db
 
 
 def get_all_centers():

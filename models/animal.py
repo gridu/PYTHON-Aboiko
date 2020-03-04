@@ -1,6 +1,6 @@
 import json
 
-from config import db
+from models import db
 from models.center import Center
 
 
