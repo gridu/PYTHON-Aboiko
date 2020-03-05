@@ -47,6 +47,7 @@ def login():
         creds_valid = validate_credentials(_login, _password)
         if creds_valid:
             token = get_token(_login)
+            log_request_access(_login)
             response = Response('Logged in as {}'.format(_login), status=201, mimetype='application/json')
             response.headers['x-access-token'] = token
             return response

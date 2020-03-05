@@ -6,6 +6,7 @@ from flask import jsonify, request
 
 from settings import Config
 from . import db
+from .access_request import Access_Request
 
 
 def make_json(self):
@@ -88,15 +89,27 @@ class Center(db.Model):
 
 
 def get_token(_login):
-    center = find_by_login(_login)
-    token = jwt.encode({'id': center.id,
-                        'exp': datetime.datetime.utcnow()
-                               + datetime.timedelta(minutes=30)},
+    # _center_id = find_by_login(_login).id
+    # expiration_time = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
+    token_payload = generate_token_payload(_login)
+    token = jwt.encode({'id': token_payload[0],
+                        'exp': token_payload[1]},
                        Config.JWT_SECRET_KEY)
-#    Access_Request
+
     # print(token)
     # return jsonify({'token': token.decode('UTF-8')})
     return token
 
 
+def log_request_access(_login):
+    token_payload = generate_token_payload(_login)
+    access_request = Access_Request(center_id=token_payload[0],
+                                    timestamp=token_payload[1])
+    db.session.add(access_request)
+    db.session.commit()
 
+
+def generate_token_payload(_login):
+    _center_id = find_by_login(_login).id
+    expiration_time = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
+    return _center_id, expiration_time
