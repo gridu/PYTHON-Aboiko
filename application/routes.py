@@ -30,6 +30,8 @@ def token_required(f):
 
         return f(current_center, *args, **kwargs)
 
+        # return f(*args, **kwargs)
+
     return decorated
 
 
@@ -42,8 +44,10 @@ def login():
     if exists:
         creds_valid = validate_credentials(_login, _password)
         if creds_valid:
-            print(get_token(_login))
-            return {'message': 'Logged in as {}'.format(_login)}
+            token = get_token(_login)
+            response = Response('Logged in as {}'.format(_login), status=201, mimetype='application/json')
+            response.headers['x-access-token'] = token
+            return response
         else:
             return {'message': 'Wrong credentials'}
     else:
@@ -51,7 +55,7 @@ def login():
 
 
 @centers.route('/centers')
-def get_centers(current_center):
+def get_centers():
     return jsonify({'centers': get_all_centers()})
 
 
@@ -69,8 +73,8 @@ def get_one_center(center_id):
     return jsonify({'center': get_center(center_id)})
 
 
-@token_required
 @species.route('/species', methods=['POST', 'GET'])
+@token_required
 def get_species():
     if request.method == 'POST':
         request_data = request.get_json()
@@ -86,8 +90,9 @@ def get_one_specie(specie_id):
     return jsonify({'specie': get_specie(specie_id)})
 
 
-@token_required
+
 @animals.route('/animals', methods=['GET', 'POST'])
+@token_required
 def get_animals():
     if request.method == 'POST':
         request_data = request.get_json()
@@ -98,8 +103,9 @@ def get_animals():
     return jsonify({'animals': get_all_animals()})
 
 
-@token_required
+
 @animals.route('/animals/<int:animal_id>', methods=['GET', 'DELETE', 'PUT'])
+@token_required
 def get_one_animal(animal_id):
     if request.method == 'PUT':
         request_data = request.get_json()

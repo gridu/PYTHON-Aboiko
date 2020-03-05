@@ -4,6 +4,7 @@ import os
 from application.animal import Animal
 from application.center import Center
 from application.specie import Specie
+from application.util import generate_hash
 
 
 def db_load_example_data(app, db):
@@ -56,7 +57,7 @@ def db_load_example_data(app, db):
 
         # iterate over the CENTER structure and populate the database
         for center in CENTER:
-            c = Center(login=center.get("login"), password=center.get("password"),
+            c = Center(login=center.get("login"), password=generate_hash(center.get("password")),
                                    address=center.get("address"))
 
             for animal in center.get("animals"):

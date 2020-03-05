@@ -92,7 +92,9 @@ def get_token(_login):
                         'exp': datetime.datetime.utcnow()
                                + datetime.timedelta(minutes=30)},
                        Config.JWT_SECRET_KEY)
-    return jsonify({'token': token.decode('UTF-8')})
+    # print(token)
+    # return jsonify({'token': token.decode('UTF-8')})
+    return token
 
 
 
