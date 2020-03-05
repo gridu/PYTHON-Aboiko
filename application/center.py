@@ -88,7 +88,8 @@ class Center(db.Model):
 
 
 def get_token(_login):
-    token = jwt.encode({'login': _login,
+    center = find_by_login(_login)
+    token = jwt.encode({'id': center.id,
                         'exp': datetime.datetime.utcnow()
                                + datetime.timedelta(minutes=30)},
                        Config.JWT_SECRET_KEY)

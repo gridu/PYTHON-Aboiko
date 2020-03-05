@@ -24,11 +24,12 @@ def token_required(f):
 
         try:
             request_data = jwt.decode(token, Config.JWT_SECRET_KEY)
-            current_center = find_by_login(request_data['login'])
+            # current_center = Center.query.get(request_data['id'])
+            _center_id = request_data['id']
         except:
             return jsonify({'message': 'Token is invalid!'}), 401
 
-        return f(current_center, *args, **kwargs)
+        return f(_center_id, *args, **kwargs)
 
         # return f(*args, **kwargs)
 
@@ -68,14 +69,15 @@ def register():
     return response
 
 
+@token_required
 @centers.route('/centers/<int:center_id>')
-def get_one_center(center_id):
+def get_one_center(_center_id, center_id):
     return jsonify({'center': get_center(center_id)})
 
 
 @species.route('/species', methods=['POST', 'GET'])
 @token_required
-def get_species():
+def get_species(_center_id):
     if request.method == 'POST':
         request_data = request.get_json()
         add_specie(request_data['name'], request_data['price'], request_data['description'])
@@ -90,10 +92,9 @@ def get_one_specie(specie_id):
     return jsonify({'specie': get_specie(specie_id)})
 
 
-
 @animals.route('/animals', methods=['GET', 'POST'])
 @token_required
-def get_animals():
+def get_animals(_center_id):
     if request.method == 'POST':
         request_data = request.get_json()
         add_animal(request_data['center_id'], request_data['name'], request_data['age'], request_data['specie'])
@@ -103,10 +104,9 @@ def get_animals():
     return jsonify({'animals': get_all_animals()})
 
 
-
 @animals.route('/animals/<int:animal_id>', methods=['GET', 'DELETE', 'PUT'])
 @token_required
-def get_one_animal(animal_id):
+def get_one_animal(_center_id, animal_id):
     if request.method == 'PUT':
         request_data = request.get_json()
         new_animal = Animal()
@@ -119,6 +119,9 @@ def get_one_animal(animal_id):
         response.headers['Location'] = "/animals/" + str(animal_id)
         return response
     elif request.method == 'DELETE':
+        animal = get_animal(animal_id)
+        if animal['center_id'] != _center_id:
+            return jsonify({'animal': 'try to delete an animal which isn\'t related to your id'})
         delete_animal(animal_id)
         response = Response("", status=201, mimetype='application/json')
         response.headers['Location'] = "/animals/" + str(animal_id)
