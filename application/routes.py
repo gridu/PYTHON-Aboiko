@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, Response, make_response
 
-from application.animal import get_all_animals, get_animal, add_animal, update_animal, Animal, delete_animal
+from application.animal import get_all_animals, get_animal, add_animal, update_animal, Animal, delete_animal, \
+    is_center_id_valid, get_all_animals_for_center
 from application.center import *
 from application.specie import get_all_species, get_specie, add_specie
 
@@ -97,11 +98,12 @@ def get_one_specie(specie_id):
 def get_animals(_center_id):
     if request.method == 'POST':
         request_data = request.get_json()
-        add_animal(request_data['center_id'], request_data['name'], request_data['age'], request_data['specie'])
+        add_animal(_center_id, request_data['name'], request_data['age'], request_data['specie'])
         response = Response("", status=201, mimetype='application/json')
         response.headers['Location'] = "/animals/" + "id"
         return response
-    return jsonify({'animals': get_all_animals()})
+    # return jsonify({'animals': get_all_animals()})
+    return jsonify({'animals': get_all_animals_for_center(_center_id)})
 
 
 @animals.route('/animals/<int:animal_id>', methods=['GET', 'DELETE', 'PUT'])
@@ -109,8 +111,11 @@ def get_animals(_center_id):
 def get_one_animal(_center_id, animal_id):
     if request.method == 'PUT':
         request_data = request.get_json()
+        if not is_center_id_valid(_center_id, animal_id):
+            return jsonify({'animal': 'try to update an animal which isn\'t related to your id'})
         new_animal = Animal()
-        new_animal.center_id = request_data['center_id']
+        #new_animal.center_id = request_data['center_id']
+        new_animal.center_id = _center_id
         new_animal.name = request_data['name']
         new_animal.age = request_data['age']
         new_animal.specie = request_data['specie']
@@ -119,8 +124,7 @@ def get_one_animal(_center_id, animal_id):
         response.headers['Location'] = "/animals/" + str(animal_id)
         return response
     elif request.method == 'DELETE':
-        animal = get_animal(animal_id)
-        if animal['center_id'] != _center_id:
+        if not is_center_id_valid(_center_id, animal_id):
             return jsonify({'animal': 'try to delete an animal which isn\'t related to your id'})
         delete_animal(animal_id)
         response = Response("", status=201, mimetype='application/json')

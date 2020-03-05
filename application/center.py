@@ -93,7 +93,7 @@ def get_token(_login):
                         'exp': datetime.datetime.utcnow()
                                + datetime.timedelta(minutes=30)},
                        Config.JWT_SECRET_KEY)
-    Access_Request
+#    Access_Request
     # print(token)
     # return jsonify({'token': token.decode('UTF-8')})
     return token

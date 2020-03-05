@@ -77,3 +77,12 @@ def update_animal(_animal_id, animal):
     existed_animal.center_id = animal.center_id
     db.session.add(existed_animal)
     db.session.commit()
+
+
+def is_center_id_valid(_animal_id, _center_id):
+    animal = get_animal(_animal_id)
+    return animal['center_id'] == _center_id
+
+
+def get_all_animals_for_center(_center_id):
+    return [make_json(animal) for animal in Animal.query.filter(Animal.center_id==_center_id)]
