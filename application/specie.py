@@ -11,7 +11,8 @@ def add_specie(_name, _price, _description):
 
 
 def get_specie(_specie_id):
-    return Specie.make_json(Specie.query.filter_by(id=_specie_id).first())
+    # return Specie.make_json(Specie.query.filter_by(id=_specie_id).first())
+    return Specie.make_json(Specie.query.get(_specie_id))
 
 
 def get_all_species():

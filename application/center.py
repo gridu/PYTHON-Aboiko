@@ -1,26 +1,56 @@
 import json
-#from .animal import Animal
+# from .animal import Animal
 from . import db
-
+from passlib.hash import pbkdf2_sha256 as sha256
 
 def make_json(self):
     return {
         'id': self.id,
         'login': self.login,
+        'pass': self.password,
         'address': self.address
     }
+
+
+# def make_json_creds(self):
+#     return {
+#         'login': self.login,
+#         'password': self.password
+#     }
 
 
 def get_all_centers():
     return [make_json(center) for center in Center.query.all()]
 
 
+def validate_credentials(_login, _password):
+    center = find_by_login(_login)
+    if center is None:
+        return False
+    # valid_pas = (center.password == _password)
+    valid_pas = Center.verify_hash(_password, center.password)
+    return valid_pas
+
+
+def does_exist(_login):
+    center = find_by_login(_login)
+    if center is None:
+        return False
+    return True
+
+
+def find_by_login(_login):
+    return Center.query.filter_by(login=_login).one_or_none()
+
+
 def get_center(_center_id):
-    return make_json(Center.query.filter_by(id=_center_id).first())
+    # return make_json(Center.query.filter_by(id=_center_id).first())
+    return make_json(Center.query.get(_center_id))
 
 
 def add_center(_login, _password, _address):
-    new_center = Center(login=_login, password=_password, address=_address)
+    new_center = Center(login=_login, password=Center.generate_hash(_password), address=_address)
+    print(make_json(new_center))
     db.session.add(new_center)
     db.session.commit()
     return make_json(new_center)
@@ -48,4 +78,10 @@ class Center(db.Model):
         }
         return json.dumps(center_object)
 
+    @staticmethod
+    def generate_hash(password):
+        return sha256.hash(password)
 
+    @staticmethod
+    def verify_hash(password, hash):
+        return sha256.verify(password, hash)

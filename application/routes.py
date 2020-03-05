@@ -1,7 +1,10 @@
-from flask import Blueprint, jsonify, request, Response
+import datetime
+
+import jwt
+from flask import Blueprint, jsonify, request, Response, make_response
 
 from application.animal import get_all_animals, get_animal, add_animal, update_animal, Animal, delete_animal
-from application.center import get_all_centers, get_center, add_center
+from application.center import get_all_centers, get_center, add_center, does_exist, validate_credentials
 from application.specie import get_all_species, get_specie, add_specie
 
 centers = Blueprint('centers', __name__)
@@ -9,6 +12,37 @@ centers = Blueprint('centers', __name__)
 species = Blueprint('species', __name__)
 
 animals = Blueprint('animals', __name__)
+
+
+@centers.route('/login')
+def login():
+    request_data = request.get_json()
+    exists= does_exist(request_data['login'])
+    if exists:
+        creds_valid = validate_credentials(request_data['login'], request_data['password'])
+        if creds_valid:
+            return {'message': 'Logged in as {}'.format(request_data['login'])}
+        else:
+            return {'message': 'Wrong credentials'}
+    else:
+        return {'message': 'Center {} doesn\'t exist'.format(request_data['login'])}
+    # auth = request.authorization
+    # if not auth or not auth.username or not auth.password:
+    #     return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+    #
+    # center = Center.query.filter_by(name=auth.username).first()
+    #
+    # if not user:
+    #     return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
+    #
+    # if check_password_hash(user.password, auth.password):
+    #     token = jwt.encode(
+    #         {'public_id': user.public_id, 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)},
+    #         app.config['SECRET_KEY'])
+    #
+    #     return jsonify({'token': token.decode('UTF-8')})
+    #
+    # return make_response('Could not verify', 401, {'WWW-Authenticate': 'Basic realm="Login required!"'})
 
 
 @centers.route('/centers')

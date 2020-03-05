@@ -42,22 +42,26 @@ class Animal(db.Model):
     #     self.age = _age
     #     self.specie = _specie
 
+
 def get_all_animals():
     return [make_json(animal) for animal in Animal.query.all()]
 
 
 def delete_animal(_animal_id):
-    animal = Animal.query.filter_by(id=_animal_id).first()
+    # animal = Animal.query.filter_by(id=_animal_id).first()
+    animal = Animal.query.get(_animal_id)
     db.session.delete(animal)
     db.session.commit()
 
 
 def get_animal(_animal_id):
-    return make_json(Animal.query.filter_by(id=_animal_id).first())
+    # return make_json(Animal.query.filter_by(id=_animal_id).first())
+    return make_json(Animal.query.get(_animal_id))
 
 
 def add_animal(_center_id, _name, _age, _specie):
-    r_center = Center.query.filter(Center.id == _center_id).one_or_none()
+    # r_center = Center.query.filter(Center.id == _center_id).one_or_none()
+    r_center = Center.query.get(_center_id)
     new_animal = Animal(center=r_center, name=_name, age=_age, specie=_specie)
 
     db.session.add(new_animal)
@@ -65,7 +69,8 @@ def add_animal(_center_id, _name, _age, _specie):
 
 
 def update_animal(_animal_id, animal):
-    existed_animal = Animal.query.filter_by(id=_animal_id).first()
+    # existed_animal = Animal.query.filter_by(id=_animal_id).first()
+    existed_animal = Animal.query.get(_animal_id)
     existed_animal.name = animal.name
     existed_animal.age = animal.age
     existed_animal.specie = animal.specie
