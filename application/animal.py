@@ -1,7 +1,5 @@
 import json
 
-from jsonschema import ValidationError
-
 from application import db
 from .center import Center
 from .exceptions.validation_exceptions import AnimalExistsException, AnimalNotFoundException, \

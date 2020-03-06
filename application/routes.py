@@ -1,13 +1,14 @@
 from flask import Blueprint, jsonify, request, Response, make_response
-from jsonschema import ValidationError
 
 from application import app
 from application.animal import get_all_animals, get_animal, add_animal, update_animal, Animal, delete_animal, \
     get_all_animals_for_center, is_center_id_valid
 from application.center import *
+from application.custom_logger import loggers
 from application.exceptions.validation_exceptions import AnimalExistsException, AnimalNotFoundException, \
     IncorrectCredentialsException, CenterDoesNotException, SpecieDoesNotExistException
 from application.specie import get_all_species, get_specie, add_specie
+
 
 from application.validations.center_validations import does_exist, validate_credentials
 
@@ -16,6 +17,8 @@ centers = Blueprint('centers', __name__)
 species = Blueprint('species', __name__)
 
 animals = Blueprint('animals', __name__)
+
+
 
 
 def token_required(f):
@@ -65,6 +68,8 @@ def login():
 
 @centers.route('/centers')
 def get_centers():
+    current_animal_id = db.session.query(Animal).count()
+    print(current_animal_id)
     return jsonify({'centers': get_all_centers()})
 
 
@@ -95,6 +100,7 @@ def get_one_center(_center_id, center_id):
 @token_required
 def get_species(_center_id):
     if request.method == 'POST':
+        loggers(request.method, request.url, _center_id, request.path)
         request_data = request.get_json()
         add_specie(request_data['name'], request_data['price'], request_data['description'])
         response = Response("", status=201, mimetype='application/json')
@@ -117,6 +123,7 @@ def get_one_specie(specie_id):
 @token_required
 def get_animals(_center_id):
     if request.method == 'POST':
+        loggers(request.method, request.url, _center_id, request.path)
         request_data = request.get_json()
         try:
             add_animal(_center_id, request_data['name'], request_data['age'], request_data['specie'])
@@ -137,6 +144,7 @@ def get_animals(_center_id):
 @token_required
 def get_one_animal(_center_id, animal_id):
     if request.method == 'PUT':
+        loggers(request.method, request.url, _center_id, request.path)
         request_data = request.get_json()
         try:
             is_center_id_valid(_center_id, animal_id)
@@ -153,7 +161,7 @@ def get_one_animal(_center_id, animal_id):
         response.headers['Location'] = "/animals/" + str(animal_id)
         return response
     elif request.method == 'DELETE':
-        app.logger.info('Processing delete request')
+        loggers(request.method, request.url, _center_id, request.path)
         try:
             is_center_id_valid(_center_id, animal_id)
         except IncorrectCredentialsException:

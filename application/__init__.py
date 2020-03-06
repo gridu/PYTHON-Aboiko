@@ -1,6 +1,6 @@
 import os
 from time import asctime
-
+import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -18,7 +18,8 @@ def create_app():
     app.config.from_object('settings.Config')
 
     db.init_app(app)
-    setup_logging(app)
+    setup_app_logging(app)
+    # setup_routes_logging()
 
     from .routes import centers
     from .routes import species
@@ -32,15 +33,22 @@ def create_app():
         db.create_all()
     db_load_example_data(app, db)
 
+
     return app
 
 
-def setup_logging(app):
-    import logging
-    # from logging import FileHandler
-    # log_handler_file = FileHandler('requests.log')
+def setup_app_logging(app):
+    # log_handler_file = FileHandler('appevents.log')
     # log_handler_file.setLevel(logging.INFO)
     # app.logger.addHandler(log_handler_file)
-    if not app.debug:
-        logging.basicConfig(filename='requests.log', level=logging.INFO,
-                        format='%(levelname)s:%(message)s')
+    # if not app.debug:
+    # logging.basicConfig(filename='appevents.log', level=logging.WARNING,
+    #                     format='%(levelname)s:%(message)s')
+    pass
+# def setup_routes_logging():
+#     logger = logging.getLogger(__name__)
+#     app_logger = logging.FileHandler('requests.log')
+#     logger.setLevel(logging.INFO)
+#     format_custom_logger = logging.Formatter("%(asctime)s %(message)s")
+#     app_logger.setFormatter(format_custom_logger)
+#     logger.addHandler(app_logger)
