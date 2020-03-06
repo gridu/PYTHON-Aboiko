@@ -153,7 +153,7 @@ def get_one_animal(_center_id, animal_id):
         response.headers['Location'] = "/animals/" + str(animal_id)
         return response
     elif request.method == 'DELETE':
-        app.logger.info(('Processing delete request'))
+        app.logger.info('Processing delete request')
         try:
             is_center_id_valid(_center_id, animal_id)
         except IncorrectCredentialsException:

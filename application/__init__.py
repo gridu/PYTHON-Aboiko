@@ -37,7 +37,10 @@ def create_app():
 
 def setup_logging(app):
     import logging
-    from logging import FileHandler
-    log_handler_file = FileHandler('requests.log')
-    log_handler_file.setLevel(logging.INFO)
-    app.logger.addHandler(log_handler_file)
+    # from logging import FileHandler
+    # log_handler_file = FileHandler('requests.log')
+    # log_handler_file.setLevel(logging.INFO)
+    # app.logger.addHandler(log_handler_file)
+    if not app.debug:
+        logging.basicConfig(filename='requests.log', level=logging.INFO,
+                        format='%(levelname)s:%(message)s')
