@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 # from application.animal import Animal
 # from application.center import Center
 # from application.specie import Specie
+from application.animal import Animal
 
 db = SQLAlchemy()
 app = Flask(__name__)
@@ -52,3 +53,6 @@ def setup_app_logging(app):
 #     format_custom_logger = logging.Formatter("%(asctime)s %(message)s")
 #     app_logger.setFormatter(format_custom_logger)
 #     logger.addHandler(app_logger)
+
+# def init_consts():
+#     print(db.session.query(Animal).count())

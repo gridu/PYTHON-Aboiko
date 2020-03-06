@@ -36,6 +36,10 @@ class Animal(db.Model):
         return json.dumps(animal_object)
 
 
+# def count_animals():
+#     return db.session.query(Animal).count()
+
+
 def get_all_animals():
     return [make_json(animal) for animal in Animal.query.all()]
 

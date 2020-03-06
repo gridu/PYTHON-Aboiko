@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request, Response, make_response
 
-from application import app
+
 from application.animal import get_all_animals, get_animal, add_animal, update_animal, Animal, delete_animal, \
-    get_all_animals_for_center, is_center_id_valid
+    get_all_animals_for_center, is_center_id_valid, count_animals
 from application.center import *
 from application.custom_logger import loggers
 from application.exceptions.validation_exceptions import AnimalExistsException, AnimalNotFoundException, \
@@ -68,8 +68,6 @@ def login():
 
 @centers.route('/centers')
 def get_centers():
-    current_animal_id = db.session.query(Animal).count()
-    print(current_animal_id)
     return jsonify({'centers': get_all_centers()})
 
 
