@@ -1,6 +1,4 @@
-import os
 
-# from . import db, create_app
 from sqlalchemy import func
 
 from application.animal import Animal
@@ -93,7 +91,3 @@ def init_consts(db):
     DB.max_center_id = db.session.query(func.max(Center.id)).scalar()
     DB.max_specie_id = db.session.query(func.max(Center.id)).scalar()
 
-# if __name__ == "__main__":
-#     app = create_app()
-#     dat = db
-#     db_load_example_data(app, db)

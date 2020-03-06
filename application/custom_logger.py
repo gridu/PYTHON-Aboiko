@@ -14,13 +14,21 @@ register_const = "register"
 def log_put_delete_requests(request_type, request_url, center_id, path):
     entity_type = path.split("/")[1]
     entity_id = path.split("/")[2]
-    logger.info('Request type: {0}; URL: {1}; Center id: {2}; Entity type: {3}; Entity id: {4}'
-                .format(request_type, request_url, center_id, entity_type, entity_id))
+    logger.info(
+        f'Request type: {request_type};'
+        f' URL: {request_url};'
+        f' Center id: {center_id};'
+        f' Entity type: {entity_type};'
+        f' Entity id: {entity_id}')
 
 
-def log_post_requests(request_type, request_url, center_id, path):
+def log_post_requests(request_type, request_url, center_id, path, generated_id):
     entity_type = path.split("/")[1]
     if entity_type == register_const:
         entity_type = center_const
-    logger.info('Request type: {0}; URL: {1}; Center id: {2}; Entity type: {3}; Entity id: {4}'
-                .format(request_type, request_url, center_id, entity_type, center_id))
+    logger.info(
+        f'Request type: {request_type};'
+        f' URL: {request_url};'
+        f' Center id: {center_id};'
+        f' Entity type: {entity_type};'
+        f' Entity id: {generated_id}')

@@ -1,8 +1,7 @@
 import datetime
 import json
-from functools import wraps
+
 import jwt
-from flask import jsonify, request
 
 from settings import Config
 from . import db
@@ -19,18 +18,11 @@ def make_json(self):
     }
 
 
-# def make_json_creds(self):
-#     return {
-#         'login': self.login,
-#         'password': self.password
-#     }
-
-
 def get_all_centers():
     return [make_json(center) for center in Center.query.all()]
 
 
-from .util import generate_hash, verify_hash
+from .util import generate_hash
 
 
 def find_by_login(_login):
@@ -79,15 +71,12 @@ class Center(db.Model):
 
 
 def get_token(_login):
-    # _center_id = find_by_login(_login).id
-    # expiration_time = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
+
     token_payload = generate_token_payload(_login)
     token = jwt.encode({'id': token_payload[0],
                         'exp': token_payload[1]},
                        Config.JWT_SECRET_KEY)
 
-    # print(token)
-    # return jsonify({'token': token.decode('UTF-8')})
     return token
 
 

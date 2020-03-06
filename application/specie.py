@@ -1,5 +1,4 @@
 import json
-from flask import jsonify
 
 from . import db
 from .exceptions.validation_exceptions import SpecieDoesNotExistException
