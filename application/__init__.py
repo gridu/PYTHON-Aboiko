@@ -1,4 +1,5 @@
 import os
+from time import asctime
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -17,6 +18,7 @@ def create_app():
     app.config.from_object('settings.Config')
 
     db.init_app(app)
+    setup_logging(app)
 
     from .routes import centers
     from .routes import species
@@ -31,3 +33,11 @@ def create_app():
     db_load_example_data(app, db)
 
     return app
+
+
+def setup_logging(app):
+    import logging
+    from logging import FileHandler
+    log_handler_file = FileHandler('requests.log')
+    log_handler_file.setLevel(logging.INFO)
+    app.logger.addHandler(log_handler_file)

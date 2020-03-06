@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, Response, make_response
 from jsonschema import ValidationError
 
+from application import app
 from application.animal import get_all_animals, get_animal, add_animal, update_animal, Animal, delete_animal, \
     get_all_animals_for_center, is_center_id_valid
 from application.center import *
@@ -152,6 +153,7 @@ def get_one_animal(_center_id, animal_id):
         response.headers['Location'] = "/animals/" + str(animal_id)
         return response
     elif request.method == 'DELETE':
+        app.logger.info(('Processing delete request'))
         try:
             is_center_id_valid(_center_id, animal_id)
         except IncorrectCredentialsException:
