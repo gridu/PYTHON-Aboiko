@@ -2,6 +2,7 @@ import json
 from flask import jsonify
 
 from . import db
+from .exceptions.validation_exceptions import SpecieDoesNotExistException
 
 
 def add_specie(_name, _price, _description):
@@ -11,8 +12,9 @@ def add_specie(_name, _price, _description):
 
 
 def get_specie(_specie_id):
-    # return Specie.make_json(Specie.query.filter_by(id=_specie_id).first())
-    return Specie.make_json(Specie.query.get(_specie_id))
+    specie = Specie.query.get(_specie_id)
+    if specie is None:
+        raise SpecieDoesNotExistException
 
 
 def get_all_species():

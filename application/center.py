@@ -7,6 +7,7 @@ from flask import jsonify, request
 from settings import Config
 from . import db
 from .access_request import Access_Request
+from .exceptions.validation_exceptions import CenterAlreadyExistsException, CenterDoesNotException
 
 
 def make_json(self):
@@ -32,32 +33,21 @@ def get_all_centers():
 from .util import generate_hash, verify_hash
 
 
-def validate_credentials(_login, _password):
-    center = find_by_login(_login)
-    if center is None:
-        return False
-    # valid_pas = (center.password == _password)
-    valid_pas = verify_hash(_password, center.password)
-    return valid_pas
-
-
-def does_exist(_login):
-    center = find_by_login(_login)
-    if center is None:
-        return False
-    return True
-
-
 def find_by_login(_login):
     return Center.query.filter_by(login=_login).one_or_none()
 
 
 def get_center(_center_id):
-    # return make_json(Center.query.filter_by(id=_center_id).first())
-    return make_json(Center.query.get(_center_id))
+    center = Center.query.get(_center_id)
+    if center is None:
+        raise CenterDoesNotException
+    return make_json(center)
 
 
 def add_center(_login, _password, _address):
+    existing_center = find_by_login(_login)
+    if existing_center is not None:
+        raise CenterAlreadyExistsException
     new_center = Center(login=_login, password=generate_hash(_password), address=_address)
     print(make_json(new_center))
     db.session.add(new_center)
@@ -101,7 +91,7 @@ def get_token(_login):
     return token
 
 
-def log_request_access(_login):
+def insert_request_access_to_db(_login):
     token_payload = generate_token_payload(_login)
     access_request = Access_Request(center_id=token_payload[0],
                                     timestamp=token_payload[1])
