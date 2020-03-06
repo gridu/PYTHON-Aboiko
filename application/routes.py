@@ -2,9 +2,11 @@ from flask import Blueprint, jsonify, request, Response, make_response
 
 
 from application.animal import get_all_animals, get_animal, add_animal, update_animal, Animal, delete_animal, \
-    get_all_animals_for_center, is_center_id_valid, count_animals
+    get_all_animals_for_center, is_center_id_valid
+from application.build_database import DB
+
 from application.center import *
-from application.custom_logger import loggers
+from application.custom_logger import log_put_delete_requests, log_post_requests
 from application.exceptions.validation_exceptions import AnimalExistsException, AnimalNotFoundException, \
     IncorrectCredentialsException, CenterDoesNotException, SpecieDoesNotExistException
 from application.specie import get_all_species, get_specie, add_specie
@@ -74,13 +76,17 @@ def get_centers():
 @centers.route('/register', methods=['POST'])
 def register():
     request_data = request.get_json()
+    login = request_data['login']
     try:
-        add_center(request_data['login'], request_data['password'], request_data['address'])
+        add_center(login, request_data['password'], request_data['address'])
     except CenterAlreadyExistsException:
-        msg = 'Center with {} login already exists'.format(request_data['login'])
+        msg = 'Center with {} login already exists'.format(login)
         return jsonify({"error": msg}), 409
-    response = Response("", status=201, mimetype='application/json')
-    response.headers['Location'] = "/centers/" + "id"
+    DB.max_center_id += 1
+    created_center_id = DB.max_center_id
+    response = Response("Registered {} center".format(login), status=201, mimetype='application/json')
+    response.headers['Location'] = "/centers/" + str(created_center_id)
+    log_post_requests(request.method, request.url, created_center_id, request.path)
     return response
 
 
@@ -98,7 +104,7 @@ def get_one_center(_center_id, center_id):
 @token_required
 def get_species(_center_id):
     if request.method == 'POST':
-        loggers(request.method, request.url, _center_id, request.path)
+        log_put_delete_requests(request.method, request.url, _center_id, request.path)
         request_data = request.get_json()
         add_specie(request_data['name'], request_data['price'], request_data['description'])
         response = Response("", status=201, mimetype='application/json')
@@ -121,7 +127,7 @@ def get_one_specie(specie_id):
 @token_required
 def get_animals(_center_id):
     if request.method == 'POST':
-        loggers(request.method, request.url, _center_id, request.path)
+        log_put_delete_requests(request.method, request.url, _center_id, request.path)
         request_data = request.get_json()
         try:
             add_animal(_center_id, request_data['name'], request_data['age'], request_data['specie'])
@@ -131,10 +137,12 @@ def get_animals(_center_id):
         except SpecieDoesNotExistException:
             msg = 'You\'re trying to assign an animal to not existing specie'
             return jsonify({"error": msg}), 409
+        DB.max_animal_id += 1
+        created_center_id = DB.max_animal_id
         response = Response("", status=201, mimetype='application/json')
-        response.headers['Location'] = "/animals/" + "id"
+        response.headers['Location'] = "/animals/" + str(DB.max_animal_id)
+        log_post_requests(request.method, request.url, created_center_id, request.path)
         return response
-    # return jsonify({'animals': get_all_animals()})
     return jsonify({'animals': get_all_animals_for_center(_center_id)})
 
 
@@ -142,7 +150,7 @@ def get_animals(_center_id):
 @token_required
 def get_one_animal(_center_id, animal_id):
     if request.method == 'PUT':
-        loggers(request.method, request.url, _center_id, request.path)
+        log_put_delete_requests(request.method, request.url, _center_id, request.path)
         request_data = request.get_json()
         try:
             is_center_id_valid(_center_id, animal_id)
@@ -159,7 +167,7 @@ def get_one_animal(_center_id, animal_id):
         response.headers['Location'] = "/animals/" + str(animal_id)
         return response
     elif request.method == 'DELETE':
-        loggers(request.method, request.url, _center_id, request.path)
+        log_put_delete_requests(request.method, request.url, _center_id, request.path)
         try:
             is_center_id_valid(_center_id, animal_id)
         except IncorrectCredentialsException:

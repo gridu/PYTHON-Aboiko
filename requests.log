@@ -9,3 +9,8 @@
 2020-03-06 17:51:33,536 Request type: DELETE; URL: http://127.0.0.1:5000/animals/5; Center id: 2; base_URL: /animals/5; Entity id: 5
 2020-03-06 17:57:00,669 Request type: DELETE; URL: http://127.0.0.1:5000/animals/5; Center id: 2; base_URL: ; Entity id: 5
 2020-03-06 17:58:22,036 Request type: DELETE; URL: http://127.0.0.1:5000/animals/5; Center id: 2; base_URL: animals; Entity id: 5
+2020-03-06 21:56:49,426 Request type: POST; URL: http://127.0.0.1:5000/register; Center id: 4; Entity type: register; Entity id: 4
+2020-03-06 21:57:06,748 Request type: POST; URL: http://127.0.0.1:5000/register; Center id: 5; Entity type: register; Entity id: 5
+2020-03-06 22:02:46,382 Request type: POST; URL: http://127.0.0.1:5000/register; Center id: 4; Entity type: centers; Entity id: 4
+2020-03-06 22:03:21,707 Request type: POST; URL: http://127.0.0.1:5000/register; Center id: 5; Entity type: centers; Entity id: 5
+2020-03-06 22:42:41,667 Request type: POST; URL: http://127.0.0.1:5000/register; Center id: 4; Entity type: centers; Entity id: 4

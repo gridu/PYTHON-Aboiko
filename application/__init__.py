@@ -4,10 +4,6 @@ import logging
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-# from application.animal import Animal
-# from application.center import Center
-# from application.specie import Specie
-from application.animal import Animal
 
 db = SQLAlchemy()
 app = Flask(__name__)
@@ -34,7 +30,6 @@ def create_app():
         db.create_all()
     db_load_example_data(app, db)
 
-
     return app
 
 
@@ -46,6 +41,8 @@ def setup_app_logging(app):
     # logging.basicConfig(filename='appevents.log', level=logging.WARNING,
     #                     format='%(levelname)s:%(message)s')
     pass
+
+
 # def setup_routes_logging():
 #     logger = logging.getLogger(__name__)
 #     app_logger = logging.FileHandler('requests.log')
@@ -54,5 +51,6 @@ def setup_app_logging(app):
 #     app_logger.setFormatter(format_custom_logger)
 #     logger.addHandler(app_logger)
 
-# def init_consts():
-#     print(db.session.query(Animal).count())
+
+
+

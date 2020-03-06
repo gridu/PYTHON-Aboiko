@@ -99,3 +99,5 @@ def is_there_exact_animal(_center_id, _name, _age, _specie):
         .filter(Animal.specie == _specie).one_or_none()
     if existing_animal is not None:
         raise AnimalExistsException
+
+

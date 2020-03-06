@@ -1,10 +1,18 @@
 import os
 
 # from . import db, create_app
+from sqlalchemy import func
+
 from application.animal import Animal
 from application.center import Center
 from application.specie import Specie
 from application.util import generate_hash
+
+
+class DB:
+    max_animal_id = 0
+    max_center_id = 0
+    max_specie_id = 0
 
 
 def db_load_example_data(app, db):
@@ -58,7 +66,7 @@ def db_load_example_data(app, db):
         # iterate over the CENTER structure and populate the database
         for center in CENTER:
             c = Center(login=center.get("login"), password=generate_hash(center.get("password")),
-                                   address=center.get("address"))
+                       address=center.get("address"))
 
             for animal in center.get("animals"):
                 name, age, specie = animal
@@ -73,11 +81,17 @@ def db_load_example_data(app, db):
 
         for specie in SPECIE:
             s = Specie(name=specie.get("name"), price=specie.get("price"),
-                                   description=specie.get("description"))
+                       description=specie.get("description"))
             db.session.add(s)
 
         db.session.commit()
+        init_consts(db)
 
+
+def init_consts(db):
+    DB.max_animal_id = db.session.query(func.max(Animal.id)).scalar()
+    DB.max_center_id = db.session.query(func.max(Center.id)).scalar()
+    DB.max_specie_id = db.session.query(func.max(Center.id)).scalar()
 
 # if __name__ == "__main__":
 #     app = create_app()
