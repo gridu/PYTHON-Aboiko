@@ -7,7 +7,6 @@ def make_json(self):
     return {
         'id': self.id,
         'login': self.login,
-        'pass': self.password,
         'address': self.address
     }
 

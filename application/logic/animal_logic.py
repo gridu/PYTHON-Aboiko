@@ -28,9 +28,9 @@ def add_animal(_center_id, _name, _age, _specie):
     is_specie_exist(_specie)
     r_center = Center.query.get(_center_id)
     new_animal = Animal(center=r_center, name=_name, age=_age, specie=_specie)
-
     db.session.add(new_animal)
     db.session.commit()
+    return make_json(new_animal)
 
 
 def is_specie_exist(_specie):

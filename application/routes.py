@@ -1,8 +1,8 @@
+import json
 from functools import wraps
 
 import jwt
 from flask import Blueprint, jsonify, request, Response
-
 
 from application.build_database import DB
 from application.custom_logger import log_put_delete_requests, log_post_requests
@@ -64,14 +64,22 @@ def login():
         return jsonify({'message': 'Wrong credentials'}), 409
     token = get_token(_login)
     insert_request_access_to_db(_login)
-    response = Response('Logged in as {}'.format(_login), status=201, mimetype='application/json')
+    response = Response(
+        'Logged in as {}'.format(_login),
+        status=201,
+        mimetype='application/json'
+    )
     response.headers['x-access-token'] = token
     return response
 
 
 @centers.route('/centers')
 def get_centers():
-    return jsonify({'centers': get_all_centers()})
+    return Response(
+        response=jsonify({'centers': get_all_centers()}),
+        status=200,
+        mimetype="application/json"
+    )
 
 
 @centers.route('/register', methods=['POST'])
@@ -79,16 +87,19 @@ def register():
     request_data = request.get_json()
     _login = request_data['login']
     try:
-        return add_center(_login, request_data['password'], request_data['address'])
+        new_center = add_center(_login, request_data['password'], request_data['address'])
+        center_id = new_center['id']
     except CenterAlreadyExistsException:
         msg = 'Center with {} login already exists'.format(_login)
         return jsonify({"error": msg}), 409
-    DB.max_center_id += 1
-    created_center_id = DB.max_center_id
-    # response = Response("Registered {} center".format(_login), status=201, mimetype='application/json')
-    # response.headers['Location'] = "/centers/" + str(created_center_id)
-    # log_post_requests(request.method, request.url, created_center_id, request.path, created_center_id)
-    # return response
+    response = Response(
+        response=json.dumps(new_center),
+        status=201,
+        mimetype="application/json"
+    )
+    response.headers['Location'] = "/centers/{0}".format(str(center_id))
+    log_post_requests(request.method, request.url, center_id, request.path, center_id)
+    return response
 
 
 @token_required
@@ -105,7 +116,6 @@ def get_one_center(_center_id, center_id):
 @token_required
 def get_species(_center_id):
     if request.method == 'POST':
-
         request_data = request.get_json()
         add_specie(request_data['name'], request_data['price'], request_data['description'])
         DB.max_specie_id += 1
@@ -131,24 +141,32 @@ def get_one_specie(specie_id):
 @token_required
 def get_animals(_center_id):
     if request.method == 'POST':
-
         request_data = request.get_json()
         try:
-            add_animal(_center_id, request_data['name'], request_data['age'], request_data['specie'])
+            new_animal = add_animal(_center_id, request_data['name'],
+                                    request_data['age'],
+                                    request_data['specie'])
+            animal_id = new_animal['id']
         except AnimalExistsException:
             msg = 'That animal already exists'
             return jsonify({"error": msg}), 409
         except SpecieDoesNotExistException:
             msg = 'You\'re trying to assign an animal to not existing specie'
             return jsonify({"error": msg}), 409
-        DB.max_animal_id += 1
-        created_animal_id = DB.max_animal_id
-        log_post_requests(request.method, request.url, _center_id, request.path, created_animal_id)
-        response = Response("", status=201, mimetype='application/json')
-        response.headers['Location'] = "/animals/" + str(DB.max_animal_id)
-        log_post_requests(request.method, request.url, _center_id, request.path, created_animal_id)
+        response = Response(
+            response=json.dumps(new_animal),
+            status=201,
+            mimetype='application/json'
+        )
+        response.headers['Location'] = "/animals/{0}".format(str(animal_id))
+        log_post_requests(request.method, request.url, _center_id, request.path, animal_id)
         return response
-    return jsonify({'animals': get_all_animals_for_center(_center_id)})
+
+    return Response(
+        response=jsonify({'animals': get_all_animals_for_center(_center_id)}),
+        status=200,
+        mimetype="application/json"
+    )
 
 
 @animals.route('/animals/<int:animal_id>', methods=['GET', 'DELETE', 'PUT'])
@@ -167,8 +185,8 @@ def get_one_animal(_center_id, animal_id):
         response = Response("", status=201, mimetype='application/json')
         response.headers['Location'] = "/animals/" + str(animal_id)
         return response
-    elif request.method == 'DELETE':
 
+    elif request.method == 'DELETE':
         try:
             is_center_id_valid(_center_id, animal_id)
         except IncorrectCredentialsException:
@@ -179,8 +197,17 @@ def get_one_animal(_center_id, animal_id):
         response = Response("", status=201, mimetype='application/json')
         response.headers['Location'] = "/animals/" + str(animal_id)
         return response
+
     try:
-        return jsonify({'animal': get_animal(animal_id)})
+        return Response(
+            response=jsonify({'animal': get_animal(animal_id)}),
+            status=200,
+            mimetype="application/json"
+        )
     except AnimalNotFoundException:
         msg = 'you\'re looking for an animal which doesn\'t exist'
-        return jsonify({"error": msg}), 409
+        return Response(
+            response=jsonify({"error": msg}),
+            status=409,
+            mimetype="application/json"
+        )

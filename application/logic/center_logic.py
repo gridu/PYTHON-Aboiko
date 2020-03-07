@@ -4,6 +4,7 @@ import jwt
 
 from application import db
 from application.access_request import Access_Request
+from application.build_database import DB
 from application.models.center import make_json, Center
 from application.exceptions.validation_exceptions import CenterDoesNotException, CenterAlreadyExistsException
 from application.util import generate_hash
@@ -34,8 +35,8 @@ def add_center(_login, _password, _address):
     db.session.commit()
     return make_json(new_center)
 
-def get_token(_login):
 
+def get_token(_login):
     token_payload = generate_token_payload(_login)
     token = jwt.encode({'id': token_payload[0],
                         'exp': token_payload[1]},
