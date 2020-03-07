@@ -1,5 +1,6 @@
-from application.center import find_by_login
+
 from application.exceptions.validation_exceptions import IncorrectCredentialsException, CenterDoesNotException
+from application.logic.center_logic import find_by_login
 from application.util import verify_hash
 
 

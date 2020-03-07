@@ -1,28 +1,17 @@
 import datetime
-import json
 
 import jwt
 
+from application import db
+from application.access_request import Access_Request
+from application.models.center import make_json, Center
+from application.exceptions.validation_exceptions import CenterDoesNotException, CenterAlreadyExistsException
+from application.util import generate_hash
 from settings import Config
-from . import db
-from .access_request import Access_Request
-from .exceptions.validation_exceptions import CenterAlreadyExistsException, CenterDoesNotException
-
-
-def make_json(self):
-    return {
-        'id': self.id,
-        'login': self.login,
-        'pass': self.password,
-        'address': self.address
-    }
 
 
 def get_all_centers():
     return [make_json(center) for center in Center.query.all()]
-
-
-from .util import generate_hash
 
 
 def find_by_login(_login):
@@ -41,34 +30,9 @@ def add_center(_login, _password, _address):
     if existing_center is not None:
         raise CenterAlreadyExistsException
     new_center = Center(login=_login, password=generate_hash(_password), address=_address)
-    print(make_json(new_center))
     db.session.add(new_center)
     db.session.commit()
     return make_json(new_center)
-
-
-class Center(db.Model):
-    __tablename__ = "center"
-    id = db.Column(db.Integer, primary_key=True)
-    login = db.Column(db.String(32), nullable=False)
-    password = db.Column(db.String(32), nullable=False)
-    address = db.Column(db.String(32))
-
-    animals = db.relationship(
-        "Animal",
-        backref="center",
-        cascade="all, delete, save-update, delete-orphan",
-        single_parent=True,
-    )
-
-    def __repr__(self):
-        center_object = {
-            'login': self.login,
-            'address': self.address,
-            # 'animals': self.animals
-        }
-        return json.dumps(center_object)
-
 
 def get_token(_login):
 

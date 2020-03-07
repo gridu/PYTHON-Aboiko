@@ -1,9 +1,9 @@
 
 from sqlalchemy import func
 
-from application.animal import Animal
-from application.center import Center
-from application.specie import Specie
+from application.models.animal import Animal
+from application.models.center import Center
+from application.models.specie import Specie
 from application.util import generate_hash
 
 
