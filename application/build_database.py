@@ -51,14 +51,19 @@ def db_load_example_data(app, db):
         SPECIE = [
             {
                 "name": "red fox",
-                "price": 12.55,
-                "description": "lives in forest"
+                "price": 120.55,
+                "description": "Angry tiger is afraid of her"
             },
             {
                 "name": "angry tiger",
                 "price": 9999999.99,
                 "description": "very angry"
-            }
+            },
+            {
+                "name": "giant lion",
+                "price": 1010.99,
+                "description": "king of animals"
+            },
         ]
 
         # iterate over the CENTER structure and populate the database
@@ -83,11 +88,11 @@ def db_load_example_data(app, db):
             db.session.add(s)
 
         db.session.commit()
-        init_consts(db)
+        # init_consts(db)
 
 
-def init_consts(db):
-    DB.max_animal_id = db.session.query(func.max(Animal.id)).scalar()
-    DB.max_center_id = db.session.query(func.max(Center.id)).scalar()
-    DB.max_specie_id = db.session.query(func.max(Center.id)).scalar()
+# def init_consts(db):
+#     DB.max_animal_id = db.session.query(func.max(Animal.id)).scalar()
+#     DB.max_center_id = db.session.query(func.max(Center.id)).scalar()
+#     DB.max_specie_id = db.session.query(func.max(Center.id)).scalar()
 

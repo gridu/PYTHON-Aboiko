@@ -24,3 +24,7 @@ class SpecieDoesNotExistException(ValueError):
 
 class CenterAlreadyExistsException(ValueError):
     pass
+
+
+class SpecieExistsException(ValueError):
+    pass

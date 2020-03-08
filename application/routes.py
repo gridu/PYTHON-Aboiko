@@ -7,7 +7,8 @@ from flask import Blueprint, jsonify, request, Response
 from application.build_database import DB
 from application.custom_logger import log_put_delete_requests, log_post_requests
 from application.exceptions.validation_exceptions import AnimalExistsException, AnimalNotFoundException, \
-    IncorrectCredentialsException, CenterDoesNotException, SpecieDoesNotExistException, CenterAlreadyExistsException
+    IncorrectCredentialsException, CenterDoesNotException, SpecieDoesNotExistException, CenterAlreadyExistsException, \
+    SpecieExistsException
 from application.logic.animal_logic import add_animal, get_all_animals_for_center, is_center_id_valid, update_animal, \
     delete_animal, get_animal
 from application.logic.center_logic import get_token, insert_request_access_to_db, get_all_centers, add_center, \
@@ -57,7 +58,12 @@ def login():
     try:
         does_exist(_login)
     except CenterDoesNotException:
-        return jsonify({'message': 'Center {} doesn\'t exist'.format(_login)}), 404
+        # return jsonify({'message': 'Center {} doesn\'t exist'.format(_login)}), 404
+        return Response(
+            response='Center {} doesn\'t exist'.format(_login),
+            status=404,
+            mimetype='application/json'
+        )
     try:
         validate_credentials(_login, _password)
     except IncorrectCredentialsException:
@@ -65,7 +71,7 @@ def login():
     token = get_token(_login)
     insert_request_access_to_db(_login)
     response = Response(
-        'Logged in as {}'.format(_login),
+        response='Logged in as {}'.format(_login),
         status=201,
         mimetype='application/json'
     )
@@ -76,7 +82,7 @@ def login():
 @centers.route('/centers')
 def get_centers():
     return Response(
-        response=jsonify({'centers': get_all_centers()}),
+        response=json.dumps(get_all_centers()),
         status=200,
         mimetype="application/json"
     )
@@ -117,21 +123,32 @@ def get_one_center(_center_id, center_id):
 def get_species(_center_id):
     if request.method == 'POST':
         request_data = request.get_json()
-        add_specie(request_data['name'], request_data['price'], request_data['description'])
-        DB.max_specie_id += 1
-        created_specie_id = DB.max_specie_id
-        log_post_requests(request.method, request.url, _center_id, request.path, created_specie_id)
-        response = Response("", status=201, mimetype='application/json')
+        try:
+            new_specie=add_specie(request_data['name'],
+                                  request_data['price'],
+                                  request_data['description'])
+        except SpecieExistsException:
+            msg = 'That specie already exists'
+            return jsonify({"error": msg}), 409
+        specie_id=new_specie['specie_id']
+        log_post_requests(request.method, request.url, _center_id, request.path, specie_id)
+        response = Response("Success", status=201, mimetype='application/json')
         response.headers['Location'] = "/species/" + "id"
+        response = Response(
+            response=json.dumps(new_specie),
+            status=201,
+            mimetype='application/json'
+        )
+        response.headers['Location'] = "/species/{0}".format(str(specie_id))
         return response
-    return jsonify({'species': get_all_species()})
+    return jsonify({'species': get_all_species()}), 200
 
 
 @species.route('/species/<int:specie_id>')
 def get_one_specie(specie_id):
     try:
         specie = get_specie(specie_id)
-        return jsonify({'specie': specie})
+        return jsonify({'species': specie})
     except SpecieDoesNotExistException:
         msg = 'Specie you\'re looking for doesn\'t exist'
         return jsonify({"error": msg}), 404
@@ -162,12 +179,13 @@ def get_animals(_center_id):
         log_post_requests(request.method, request.url, _center_id, request.path, animal_id)
         return response
 
-    return Response(
-        response=jsonify({'animals': get_all_animals_for_center(_center_id)}),
-        status=200,
-        mimetype="application/json"
-    )
-
+    # return Response(
+    #     # response=jsonify({'animals': get_all_animals_for_center(_center_id)}),
+    #     response=json.dumps(get_all_animals_for_center(_center_id)),
+    #     status=200,
+    #     mimetype="application/json"
+    # )
+    return jsonify({'animals': get_all_animals_for_center(_center_id)})
 
 @animals.route('/animals/<int:animal_id>', methods=['GET', 'DELETE', 'PUT'])
 @token_required
@@ -182,9 +200,8 @@ def get_one_animal(_center_id, animal_id):
         new_animal_data = (animal_id, _center_id, request_data['name'], request_data['age'], request_data['specie'])
         log_put_delete_requests(request.method, request.url, _center_id, request.path)
         update_animal(new_animal_data)
-        response = Response("", status=201, mimetype='application/json')
-        response.headers['Location'] = "/animals/" + str(animal_id)
-        return response
+        msg = "an animal updated successfully"
+        return jsonify({"success": msg}), 200
 
     elif request.method == 'DELETE':
         try:
@@ -194,20 +211,15 @@ def get_one_animal(_center_id, animal_id):
             return jsonify({"error": msg}), 409
         log_put_delete_requests(request.method, request.url, _center_id, request.path)
         delete_animal(animal_id)
-        response = Response("", status=201, mimetype='application/json')
-        response.headers['Location'] = "/animals/" + str(animal_id)
-        return response
+        msg = "an animal deleted successfully"
+        return jsonify({"success": msg}), 204
 
     try:
-        return Response(
-            response=jsonify({'animal': get_animal(animal_id)}),
-            status=200,
-            mimetype="application/json"
-        )
+        is_center_id_valid(_center_id, animal_id)
+    except IncorrectCredentialsException:
+        msg = 'you\'re trying to view the animal which isn\'t related to your id'
+        return jsonify({"error": msg}), 409
     except AnimalNotFoundException:
         msg = 'you\'re looking for an animal which doesn\'t exist'
-        return Response(
-            response=jsonify({"error": msg}),
-            status=409,
-            mimetype="application/json"
-        )
+        return jsonify({"error": msg}), 404
+    return jsonify(get_animal(animal_id)), 200

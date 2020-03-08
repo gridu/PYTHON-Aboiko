@@ -3,6 +3,12 @@ import json
 from application import db
 
 
+def make_json(self):
+    return {'specie_id': self.id,
+            'name': self.name,
+            'price': self.price,
+            'description': self.description}
+
 class Specie(db.Model):
     __tablename__ = "specie"
     id = db.Column(db.Integer, primary_key=True)
@@ -20,8 +26,4 @@ class Specie(db.Model):
         }
         return json.dumps(specie_object)
 
-    def make_json(self):
-        return {'specie_id': self.id,
-                'name': self.name,
-                'price': self.price,
-                'description': self.description}
+

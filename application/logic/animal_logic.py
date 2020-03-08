@@ -52,9 +52,11 @@ def get_all_animals_for_center(_center_id):
     return [make_json(animal) for animal in Animal.query.filter(Animal.center_id == _center_id)]
 
 
-def is_center_id_valid(_animal_id, _center_id):
+def is_center_id_valid(_center_id, _animal_id):
     animal = get_animal(_animal_id)
-    if animal['center_id'] == _center_id:
+    print(animal['center_id'])
+    print(_center_id)
+    if animal['center_id'] != _center_id:
         raise IncorrectCredentialsException
 
 
