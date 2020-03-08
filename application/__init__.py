@@ -18,9 +18,9 @@ def create_app():
     setup_app_logging(app)
     # setup_routes_logging()
 
-    from .routes import centers
-    from .routes import species
-    from .routes import animals
+    from .routes.routes import centers
+    from .routes.routes import species
+    from .routes.routes import animals
     app.register_blueprint(centers)
     app.register_blueprint(species)
     app.register_blueprint(animals)

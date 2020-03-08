@@ -1,10 +1,8 @@
 import json
-from functools import wraps
 
-import jwt
 from flask import Blueprint, jsonify, request, Response
 
-from application.build_database import DB
+
 from application.custom_logger import log_put_delete_requests, log_post_requests
 from application.exceptions.validation_exceptions import AnimalExistsException, AnimalNotFoundException, \
     IncorrectCredentialsException, CenterDoesNotException, SpecieDoesNotExistException, CenterAlreadyExistsException, \
@@ -14,9 +12,10 @@ from application.logic.animal_logic import add_animal, get_all_animals_for_cente
 from application.logic.center_logic import get_token, insert_request_access_to_db, get_all_centers, add_center, \
     get_center
 from application.logic.specie_logic import get_all_species, get_specie, add_specie
+from application.util import token_required
 
 from application.validations.center_validations import does_exist, validate_credentials
-from settings import Config
+
 
 centers = Blueprint('centers', __name__)
 
@@ -25,27 +24,7 @@ species = Blueprint('species', __name__)
 animals = Blueprint('animals', __name__)
 
 
-def token_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        token = None
 
-        if 'x-access-token' in request.headers:
-            token = request.headers['x-access-token']
-
-        if not token:
-            return jsonify({'message': 'Token is missing!'}), 401
-
-        try:
-            request_data = jwt.decode(token, Config.JWT_SECRET_KEY)
-            # current_center = Center.query.get(request_data['id'])
-            _center_id = request_data['id']
-        except:
-            return jsonify({'message': 'Token is invalid!'}), 401
-
-        return f(_center_id, *args, **kwargs)
-
-    return decorated
 
 
 @centers.route('/login')
@@ -117,13 +96,13 @@ def get_species(_center_id):
     if request.method == 'POST':
         request_data = request.get_json()
         try:
-            new_specie=add_specie(request_data['name'],
-                                  request_data['price'],
-                                  request_data['description'])
+            new_specie = add_specie(request_data['name'],
+                                    request_data['price'],
+                                    request_data['description'])
         except SpecieExistsException:
             msg = 'That specie already exists'
             return jsonify({"error": msg}), 409
-        specie_id=new_specie['specie_id']
+        specie_id = new_specie['specie_id']
         log_post_requests(request.method, request.url, _center_id, request.path, specie_id)
         response = Response("Success", status=201, mimetype='application/json')
         response.headers['Location'] = "/species/" + "id"
@@ -172,13 +151,8 @@ def get_animals(_center_id):
         log_post_requests(request.method, request.url, _center_id, request.path, animal_id)
         return response
 
-    # return Response(
-    #     # response=jsonify({'animals': get_all_animals_for_center(_center_id)}),
-    #     response=json.dumps(get_all_animals_for_center(_center_id)),
-    #     status=200,
-    #     mimetype="application/json"
-    # )
     return jsonify({'animals': get_all_animals_for_center(_center_id)})
+
 
 @animals.route('/animals/<int:animal_id>', methods=['GET', 'DELETE', 'PUT'])
 @token_required
