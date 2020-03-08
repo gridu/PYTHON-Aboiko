@@ -39,6 +39,7 @@ def is_specie_exist(_specie):
 
 
 def update_animal(animal_data):
+    is_specie_exist(animal_data[4])
     existed_animal = Animal.query.get(animal_data[0])
     existed_animal.center_id = animal_data[1]
     existed_animal.name = animal_data[2]

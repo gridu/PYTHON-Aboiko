@@ -45,8 +45,6 @@ def token_required(f):
 
         return f(_center_id, *args, **kwargs)
 
-        # return f(*args, **kwargs)
-
     return decorated
 
 
@@ -58,12 +56,7 @@ def login():
     try:
         does_exist(_login)
     except CenterDoesNotException:
-        # return jsonify({'message': 'Center {} doesn\'t exist'.format(_login)}), 404
-        return Response(
-            response='Center {} doesn\'t exist'.format(_login),
-            status=404,
-            mimetype='application/json'
-        )
+        return jsonify({'message': 'Center {} doesn\'t exist'.format(_login)}), 404
     try:
         validate_credentials(_login, _password)
     except IncorrectCredentialsException:
@@ -198,8 +191,12 @@ def get_one_animal(_center_id, animal_id):
             msg = 'you\'re trying to update an animal which isn\'t related to your id'
             return jsonify({"error": msg}), 409
         new_animal_data = (animal_id, _center_id, request_data['name'], request_data['age'], request_data['specie'])
+        try:
+            update_animal(new_animal_data)
+        except:
+            msg = 'You\'re trying to update an animal of not existing specie'
+            return jsonify({"error": msg}), 409
         log_put_delete_requests(request.method, request.url, _center_id, request.path)
-        update_animal(new_animal_data)
         msg = "an animal updated successfully"
         return jsonify({"success": msg}), 200
 
@@ -209,8 +206,13 @@ def get_one_animal(_center_id, animal_id):
         except IncorrectCredentialsException:
             msg = 'you\'re trying to delete an animal which isn\'t related to your id'
             return jsonify({"error": msg}), 409
+        except AnimalNotFoundException:
+            msg = 'you\'re trying to delete an animal which doesn\'t exist'
+            return jsonify({"error": msg}), 404
         log_put_delete_requests(request.method, request.url, _center_id, request.path)
+
         delete_animal(animal_id)
+
         msg = "an animal deleted successfully"
         return jsonify({"success": msg}), 204
 
