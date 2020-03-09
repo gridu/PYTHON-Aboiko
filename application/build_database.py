@@ -7,10 +7,10 @@ from application.models.specie import Specie
 from application.util import generate_hash
 
 
-class DB:
-    max_animal_id = 0
-    max_center_id = 0
-    max_specie_id = 0
+# class DB:
+#     max_animal_id = 0
+#     max_center_id = 0
+#     max_specie_id = 0
 
 
 def db_load_example_data(app, db):

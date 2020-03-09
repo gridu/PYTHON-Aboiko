@@ -3,9 +3,9 @@ import json
 from flask import jsonify, Response, make_response
 
 from application import db
-from application.exceptions.validation_exceptions import SpecieDoesNotExistException, SpecieExistsException
 from application.models.specie import make_json
 from application.models.specie import Specie
+from application.validations.animal_specie_validations import is_specie_exist
 
 
 def add_specie(_name, _price, _description):
@@ -18,7 +18,7 @@ def add_specie(_name, _price, _description):
     :return:                JSON of created specie data on success
     """
     specie = Specie(name=_name, price=_price, description=_description)
-    if specie_exist(_name):
+    if is_specie_exist(_name):
         msg = 'That specie already exists'
         return make_response(jsonify({"error": msg}), 409)
     db.session.add(specie)
@@ -62,6 +62,3 @@ def get_all_species():
     return make_response(jsonify({'species':
                         [make_json(specie) for specie in Specie.query.all()]}), 200)
 
-
-def specie_exist(_name):
-    return Specie.query.filter_by(name=_name).one_or_none() is not None

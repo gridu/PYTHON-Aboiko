@@ -1,9 +1,6 @@
-import json
-
-from flask import Blueprint, jsonify, request, Response
+from flask import Blueprint, request
 
 from application.custom_logger import log_post_requests
-from application.exceptions.validation_exceptions import SpecieDoesNotExistException, SpecieExistsException
 from application.logic.specie_logic import get_all_species, get_specie, add_specie
 from application.util import token_required
 

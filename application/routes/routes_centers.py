@@ -1,14 +1,8 @@
-import json
-
-from flask import Blueprint, jsonify, request, Response
+from flask import Blueprint, request
 
 from application.custom_logger import log_post_requests
-from application.exceptions.validation_exceptions import IncorrectCredentialsException, CenterDoesNotException, \
-    CenterAlreadyExistsException
-from application.logic.center_logic import get_token, insert_request_access_to_db, get_all_centers, add_center, \
+from application.logic.center_logic import get_all_centers, add_center, \
     get_center, login_center
-from application.util import token_required
-from application.validations.center_validations import does_exist, validate_credentials
 
 centers = Blueprint('centers', __name__)
 

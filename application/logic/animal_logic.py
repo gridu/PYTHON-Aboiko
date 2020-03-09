@@ -5,13 +5,7 @@ from flask import make_response, jsonify, Response
 from application import db
 from application.models.animal import Animal, make_json
 from application.models.center import Center
-from application.exceptions.validation_exceptions import IncorrectCredentialsException, AnimalExistsException, \
-    SpecieDoesNotExistException, AnimalNotFoundException
-from application.models.specie import Specie
-
-
-def get_all_animals():
-    return make_response([make_json(animal) for animal in Animal.query.all()], 200)
+from application.validations.animal_specie_validations import is_there_exact_animal, is_specie_exist, is_center_id_valid
 
 
 def delete_animal(_center_id, _animal_id):
@@ -86,10 +80,6 @@ def add_animal(_center_id, _name, _age, _specie):
     return response
 
 
-def is_specie_exist(_specie):
-    return Specie.query.filter_by(name=_specie).one_or_none() is not None # specie exists
-
-
 def update_animal(animal_id, animal_data):
     animal = Animal.query.get(animal_id)
     if animal is None:
@@ -114,14 +104,3 @@ def update_animal(animal_id, animal_data):
 
 def get_all_animals_for_center(_center_id):
     return [make_json(animal) for animal in Animal.query.filter(Animal.center_id == _center_id)]
-
-
-def is_center_id_valid(_center_id, animal):
-    return animal.center_id == _center_id
-
-
-def is_there_exact_animal(_center_id, _name, _age, _specie):
-    existing_animal = Animal.query.filter(Animal.center_id == _center_id) \
-        .filter(Animal.name == _name).filter(Animal.age == _age) \
-        .filter(Animal.specie == _specie).one_or_none()
-    return existing_animal is not None

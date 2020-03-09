@@ -1,5 +1,3 @@
-from application.exceptions.validation_exceptions import IncorrectCredentialsException, CenterDoesNotException
-
 from application.models.center import Center
 from application.util import verify_hash
 
