@@ -2,7 +2,7 @@ from flask import Blueprint, request
 
 from application.custom_logger import log_post_requests
 from application.logic.specie_logic import get_all_species, get_specie, add_specie
-from application.util import token_required
+from authentification.auth_logic import token_required
 
 species = Blueprint('species', __name__)
 
