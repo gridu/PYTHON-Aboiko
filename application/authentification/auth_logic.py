@@ -6,7 +6,7 @@ from flask import request, jsonify
 
 from application import db
 from application.validations.center_validations import find_by_login
-from authentification.access_request import Access_Request
+from application.authentification.accessrequest import AccessRequest
 from settings import Config
 
 
@@ -44,8 +44,8 @@ def get_token(_login):
 
 def insert_request_access_to_db(_login):
     token_payload = generate_token_payload(_login)
-    access_request = Access_Request(center_id=token_payload[0],
-                                    timestamp=token_payload[1])
+    access_request = AccessRequest(center_id=token_payload[0],
+                                   timestamp=token_payload[1])
     db.session.add(access_request)
     db.session.commit()
 

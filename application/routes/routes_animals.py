@@ -4,7 +4,7 @@ from application.custom_logger import log_put_delete_requests, log_post_requests
 from application.logic.animal_logic import add_animal, get_all_animals_for_center, update_animal, \
     delete_animal, get_animal
 from application.schemas import post_animal_schema, put_animal_schema
-from authentification.auth_logic import token_required
+from application.authentification.auth_logic import token_required
 
 animals = Blueprint('animals', __name__)
 

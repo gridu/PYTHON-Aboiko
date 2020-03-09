@@ -1,16 +1,7 @@
-
-from sqlalchemy import func
-
 from application.models.animal import Animal
 from application.models.center import Center
 from application.models.specie import Specie
 from application.util import generate_hash
-
-
-# class DB:
-#     max_animal_id = 0
-#     max_center_id = 0
-#     max_specie_id = 0
 
 
 def db_load_example_data(app, db):
@@ -88,11 +79,4 @@ def db_load_example_data(app, db):
             db.session.add(s)
 
         db.session.commit()
-        # init_consts(db)
-
-
-# def init_consts(db):
-#     DB.max_animal_id = db.session.query(func.max(Animal.id)).scalar()
-#     DB.max_center_id = db.session.query(func.max(Center.id)).scalar()
-#     DB.max_specie_id = db.session.query(func.max(Center.id)).scalar()
 

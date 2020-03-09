@@ -1,7 +1,7 @@
 from application import db
 
 
-class Access_Request(db.Model):
+class AccessRequest(db.Model):
     __tablename__ = "access_request"
     id = db.Column(db.Integer, primary_key=True)
     center_id = db.Column(db.Integer, nullable=False)

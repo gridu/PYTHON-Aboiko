@@ -6,7 +6,7 @@ from application import db
 from application.models.center import make_json, Center
 from application.util import generate_hash
 from application.validations.center_validations import does_exist, validate_credentials, find_by_login
-from authentification.auth_logic import get_token, insert_request_access_to_db
+from application.authentification.auth_logic import get_token, insert_request_access_to_db
 
 
 def login_center(_login, _password):
