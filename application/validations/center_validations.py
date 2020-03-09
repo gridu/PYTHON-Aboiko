@@ -1,20 +1,21 @@
-
 from application.exceptions.validation_exceptions import IncorrectCredentialsException, CenterDoesNotException
-from application.logic.center_logic import find_by_login
+
+from application.models.center import Center
 from application.util import verify_hash
 
 
 def does_exist(_login):
     center = find_by_login(_login)
-    if center is None:
-        raise CenterDoesNotException
+    return center is not None  # center exists
 
 
 def validate_credentials(_login, _password):
     center = find_by_login(_login)
     if center is None:
         return False
-    # valid_pas = (center.password == _password)
     valid_pas = verify_hash(_password, center.password)
-    if not valid_pas:
-        raise IncorrectCredentialsException
+    return valid_pas
+
+
+def find_by_login(_login):
+    return Center.query.filter_by(login=_login).one_or_none()
