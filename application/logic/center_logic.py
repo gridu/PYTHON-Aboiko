@@ -10,6 +10,14 @@ from authentification.auth_logic import get_token, insert_request_access_to_db
 
 
 def login_center(_login, _password):
+    """
+    This function registers a new center
+
+    :param _login        Login of the center to login with
+    :param _password     Password of the center to login with
+    :return:             success (200), 404 if center doesn't exist,
+                         409 for wrong credentials
+    """
     if not does_exist(_login):
         return make_response(jsonify({'message': 'Center {} doesn\'t exist'.format(_login)}), 404)
 
@@ -29,10 +37,20 @@ def login_center(_login, _password):
 
 
 def get_all_centers():
+    """
+    This function returns all registered centers as a response for the route /centers
+    """
     return make_response(jsonify([make_json(center) for center in Center.query.all()]), 200)
 
 
 def get_center(center_id):
+    """
+    This function registers a new center
+
+    :param center_id     Login of the center to obtain
+    :return:            JSON of center data on success (200),
+                        404 if center doesn't exist
+    """
     center = Center.query.get(center_id)
     if center is None:
         msg = 'center you\'re looking for doesn\'t exist'
@@ -41,6 +59,14 @@ def get_center(center_id):
 
 
 def add_center(_login, _password, _address):
+    """
+    This function registers a new center
+
+    :param _login       Login of the center to register
+    :param _password    Password of the center to register
+    :param _address     Address of the center to register
+    :return:            200 on successful register, 409 if center exists
+    """
     existing_center = find_by_login(_login)
     if existing_center is not None:
         msg = 'Center with {} login already exists'.format(_login)

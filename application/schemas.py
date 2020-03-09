@@ -17,7 +17,7 @@ login_schema = {
     'required': ['login', 'password']
 }
 
-post_animal_schema={
+post_animal_schema = {
     'type': 'object',
     'properties': {
         'name': {'type': 'string'},
@@ -27,7 +27,7 @@ post_animal_schema={
     'required': ['name', 'age', 'specie']
 }
 
-post_specie_schema={
+post_specie_schema = {
     'type': 'object',
     'properties': {
         'name': {'type': 'string'},
@@ -37,7 +37,7 @@ post_specie_schema={
     'required': ['name', 'price', 'description']
 }
 
-put_animal_schema={
+put_animal_schema = {
     'type': 'object',
     'properties': {
         'name': {'type': 'string'},

@@ -34,14 +34,13 @@ def add_specie(_name, _price, _description):
     return response
 
 
-
 def get_specie(_specie_id):
     """
     This function responds to a GET request for /species/{specie_id}
     with one matching specie
 
     :param _specie_id:         Id of the specie
-    :return:                json string of specie contents
+    :return:                JSON string of specie contents
     """
     specie = Specie.query.get(_specie_id)
     if specie is None:
@@ -50,15 +49,12 @@ def get_specie(_specie_id):
     return make_json(specie)
 
 
-
-
 def get_all_species():
     """
     This function responds to a GET request for /species
     with the complete list of species
 
-    :return:                json list with all species
+    :return:                JSON list with all species
     """
     return make_response(jsonify({'species':
-                        [make_json(specie) for specie in Specie.query.all()]}), 200)
-
+                                      [make_json(specie) for specie in Specie.query.all()]}), 200)
