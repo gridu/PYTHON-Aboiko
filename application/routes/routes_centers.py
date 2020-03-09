@@ -1,13 +1,15 @@
 from flask import Blueprint, request
-
+from flask_expects_json import expects_json
 from application.custom_logger import log_post_requests
 from application.logic.center_logic import get_all_centers, add_center, \
     get_center, login_center
+from application.schemas import register_schema, login_schema
 
 centers = Blueprint('centers', __name__)
 
 
 @centers.route('/login')
+@expects_json(login_schema)
 def login():
     request_data = request.get_json()
     _login = request_data['login']
@@ -21,6 +23,7 @@ def get_centers():
 
 
 @centers.route('/register', methods=['POST'])
+@expects_json(register_schema)
 def register():
     request_data = request.get_json()
     response = add_center(request_data['login'],
