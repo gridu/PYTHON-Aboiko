@@ -2,7 +2,7 @@ import datetime
 from functools import wraps
 
 import jwt
-from flask import request, jsonify
+from flask import request, jsonify, make_response
 
 from application import db
 from application.validations.center_validations import find_by_login
@@ -23,10 +23,14 @@ def token_required(f):
 
         try:
             request_data = jwt.decode(token, Config.JWT_SECRET_KEY)
-            # current_center = Center.query.get(request_data['id'])
             _center_id = request_data['id']
-        except:
-            return jsonify({'message': 'Token is invalid!'}), 401
+            # could be used for the test !!!
+            # access_req=AccessRequest.query.filter_by(center_id=_center_id).first()
+            # if access_req.timestamp < datetime.datetime.utcnow()
+        except jwt.ExpiredSignatureError:
+            return make_response(jsonify({'message': 'Signature expired. Please log in again'}), 401)
+        except jwt.InvalidTokenError:
+            return make_response(jsonify({'message': 'Token is invalid!'}), 401)
 
         return f(_center_id, *args, **kwargs)
 

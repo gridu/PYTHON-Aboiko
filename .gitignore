@@ -1,2 +1,5 @@
 *.db
 *.log
+/venv/
+/.idea/
+/__pyache__/
