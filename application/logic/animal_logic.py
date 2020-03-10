@@ -42,6 +42,7 @@ def get_animal(_center_id, _animal_id):
                             is no such an animal
     """
     animal = Animal.query.get(_animal_id)
+
     if animal is None:
         msg = 'you\'re looking for an animal which doesn\'t exist'
         return make_response(jsonify({"error": msg}), 404)
