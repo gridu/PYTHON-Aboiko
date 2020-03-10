@@ -2,7 +2,7 @@ import os
 
 import pytest
 # from flaskr.db import get_db
-from application import create_app, db
+from application import create_app
 from application.models.center import Center
 from settings import config_file
 
