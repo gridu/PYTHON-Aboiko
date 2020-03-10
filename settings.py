@@ -3,12 +3,14 @@ import sys
 from flask import Flask
 import configparser
 import os
-assert os.path.exists('config.ini')
+
+this_folder = os.path.dirname(os.path.abspath(__file__))
+config_file = os.path.join(this_folder, 'config.ini')
 
 app = Flask(__name__)
 
 parser = configparser.ConfigParser()
-parser.read('config.ini')
+parser.read(config_file)
 
 
 class Config:

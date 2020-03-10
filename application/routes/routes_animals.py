@@ -47,7 +47,7 @@ def get_or_delete_animal(_center_id, animal_id):
 def put_animal(_center_id, animal_id):
     request_data = request.get_json()
     new_animal_data = (animal_id, _center_id, request_data['name'], request_data['age'], request_data['specie'])
-    response = update_animal(animal_id, new_animal_data)
+    response = update_animal(new_animal_data)
     if response.status_code == 200:
         log_put_delete_requests(request.method, request.url, _center_id, request.path)
     return response

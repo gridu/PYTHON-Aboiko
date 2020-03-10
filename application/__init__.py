@@ -15,7 +15,7 @@ def create_app():
     app.config.from_object('settings.Config')
 
     db.init_app(app)
-    setup_app_logging(app)
+    # setup_app_logging(app)
     # setup_routes_logging()
 
     from .routes.routes_centers import centers
