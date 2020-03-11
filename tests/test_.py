@@ -1,19 +1,20 @@
 import os
 
 import pytest
-# from flaskr.db import get_db
+
 from application import create_app
 from application.models.center import Center
 from settings import config_file
 
+test_configs = 'settings.TestConfig'
 
 @pytest.fixture
 def setup():
-    app = create_app()
-    return app
+    test_app = create_app(test_configs)
+    return test_app
 
 
-def test_config_path_correct(setup):
+def test_config_path_correct():
     assert os.path.exists(config_file)
 
 

@@ -20,3 +20,17 @@
 2020-03-10 17:12:36,698 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
 2020-03-10 17:13:46,242 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
 2020-03-10 17:19:48,118 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
+2020-03-10 21:07:14,426 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
+2020-03-10 21:18:43,752 Request type: POST; URL: http://localhost/register; Center id: 31; Entity type: centers; Entity id: 31
+2020-03-10 21:32:30,455 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
+2020-03-10 21:46:16,294 Request type: POST; URL: http://localhost/register; Center id: 10; Entity type: centers; Entity id: 10
+2020-03-10 21:49:35,408 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
+2020-03-10 22:01:31,906 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
+2020-03-10 22:02:07,033 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
+2020-03-10 22:24:00,004 Request type: POST; URL: http://localhost/register; Center id: 10; Entity type: centers; Entity id: 10
+2020-03-10 22:24:42,141 Request type: POST; URL: http://localhost/register; Center id: 10; Entity type: centers; Entity id: 10
+2020-03-10 22:26:50,713 Request type: POST; URL: http://localhost/register; Center id: 10; Entity type: centers; Entity id: 10
+2020-03-10 22:28:55,516 Request type: POST; URL: http://localhost/register; Center id: 10; Entity type: centers; Entity id: 10
+2020-03-10 23:09:36,327 Request type: POST; URL: http://localhost/register; Center id: 10; Entity type: centers; Entity id: 10
+2020-03-10 23:11:03,003 Request type: POST; URL: http://localhost/register; Center id: 10; Entity type: centers; Entity id: 10
+2020-03-10 23:15:06,359 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
