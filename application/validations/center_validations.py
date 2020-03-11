@@ -16,4 +16,4 @@ def validate_credentials(_login, _password):
 
 
 def find_by_login(_login):
-    return Center.query.filter_by(login=_login).one_or_none()
+    return Center.query.filter_by(login=_login).first()
