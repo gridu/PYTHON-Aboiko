@@ -108,3 +108,11 @@
 2020-03-12 10:08:11,991 Request type: POST; URL: http://localhost/animals; Center id: 1; Entity type: animals; Entity id: 10
 2020-03-12 10:33:56,082 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
 2020-03-12 10:33:56,779 Request type: POST; URL: http://localhost/animals; Center id: 1; Entity type: animals; Entity id: 10
+2020-03-12 23:13:22,899 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
+2020-03-12 23:16:39,422 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
+2020-03-12 23:17:21,569 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
+2020-03-12 23:23:23,705 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
+2020-03-12 23:25:07,246 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
+2020-03-12 23:25:07,865 Request type: POST; URL: http://localhost/animals; Center id: 1; Entity type: animals; Entity id: 10
+2020-03-12 23:26:00,584 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
+2020-03-12 23:26:01,202 Request type: POST; URL: http://localhost/animals; Center id: 1; Entity type: animals; Entity id: 10

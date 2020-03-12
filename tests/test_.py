@@ -1,73 +1,31 @@
-import os
 from collections import namedtuple
-
-import pytest
-
-from application import create_app
-
 from application.util import generate_hash
-from settings import config_file, TestConfig
-
-import sqlalchemy
-from sqlalchemy.orm import sessionmaker, scoped_session
 from hmac import compare_digest
 
-test_configs = 'settings.TestConfig'
-
-test_login_register = "Center23"
-test_password_register = "password23"
-test_address = "Berlin"
-
-test_login = "Center1"
-test_password = "password1"
-
-test_animal_name = "Gregg"
-test_animal_age = 3
-test_animal_specie = "red fox"
+from tests.test_data import *
 
 
-def get_scoped_session():
-    engine = sqlalchemy.create_engine(TestConfig.SQLALCHEMY_DATABASE_URI)
-    session = scoped_session(sessionmaker(bind=engine))
-    return session()
-
-
-@pytest.fixture
-def setup():
-    test_app = create_app(test_configs)
-    return test_app
-
-
-def get_test_token(setup):
-    client = setup.test_client()
+def get_test_token(client):
     response = client.get("/login", json={"login": test_login, "password": test_password})
     return response.headers['x-access-token']
 
 
-def test_config_path_correct():
-    assert os.path.exists(config_file)
-
-
-def test_get_centers_unauth(setup):
-    client = setup.test_client()
+def test_get_centers_unauth(client):
     response = client.get("/centers")
     assert response.status_code == 200
 
 
-def test_get_center(setup):
-    client = setup.test_client()
+def test_get_center(client):
     response = client.get("/centers/1")
     assert response.status_code == 200
 
 
-def test_register(setup):
-    client = setup.test_client()
+def test_register(client, session):
     response = client.post("/register", json={"login": test_login_register,
                                               "password": test_password_register,
                                               "address": test_address})
     assert response.status_code == 201
-    s = get_scoped_session()
-    result = s.execute("select * from center where login = :value", {'value': test_login_register})
+    result = session.execute("select * from center where login = :value", {'value': test_login_register})
     Record = namedtuple('Record', result.keys())
     records = [Record(*r) for r in result.fetchall()]
     r = records[0]
@@ -76,27 +34,27 @@ def test_register(setup):
     compare_digest(r.password, generate_hash(test_password_register))
 
 
-def test_get_token_with_login(setup):
-    token = get_test_token(setup)
-    assert token is not None
-
-
-def test_token_required(setup):
-    client = setup.test_client()
+def test_token_required(client):
     response = client.get("/animals")
     assert response.status_code == 401
 
 
-def test_token(setup):
-    client = setup.test_client()
-    token = get_test_token(setup)
+def test_get_animals(client):
+    animals_response = client.get("/animals", headers={'x-access-token': 'wrong_value'})
+    assert animals_response.json['error'] == 'Token is invalid!'
+    assert animals_response.status_code == 401
+
+    animals_response = client.get("/animals")
+    assert animals_response.json['error'] == 'Token is missing!'
+    assert animals_response.status_code == 401
+
+    token = get_test_token(client)
     animals_response = client.get("/animals", headers={'x-access-token': token})
     assert animals_response.status_code == 200
 
 
-def test_post_animal(setup):
-    client = setup.test_client()
-    token = get_test_token(setup)
+def test_post_animal(client, session):
+    token = get_test_token(client)
 
     # post an animal of not existin specie
     animals_response = client.post("/animals", headers={'x-access-token': token},
@@ -123,8 +81,7 @@ def test_post_animal(setup):
     assert animals_response.status_code == 409
 
     # get just added animal from database with raw SQL query
-    s = get_scoped_session()
-    result = s.execute("select * from animal where name = :value", {'value': test_animal_name})
+    result = session.execute("select * from animal where name = :value", {'value': test_animal_name})
     Record = namedtuple('Record', result.keys())
     records = [Record(*r) for r in result.fetchall()]
     r = records[0]
@@ -132,9 +89,8 @@ def test_post_animal(setup):
     assert r.specie == test_animal_specie
 
 
-def test_get_animal_for_the_center(setup):
-    client = setup.test_client()
-    token = get_test_token(setup)
+def test_get_animal_for_the_center(client):
+    token = get_test_token(client)
     animals_response = client.get("/animals/3", headers={'x-access-token': token})
     assert animals_response.status_code == 200
 
