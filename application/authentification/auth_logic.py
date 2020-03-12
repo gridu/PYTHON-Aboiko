@@ -21,15 +21,15 @@ def token_required(f):
             token = request.headers['x-access-token']
 
         if not token:
-            return jsonify({'message': 'Token is missing!'}), 401
+            return jsonify({'error': 'Token is missing!'}), 401
 
         try:
             request_data = jwt.decode(token, Config.JWT_SECRET_KEY, algorithms=[Config.JWT_ALGORITHM])
             _center_id = request_data['id']
         except jwt.ExpiredSignatureError:
-            return make_response(jsonify({'message': 'Signature expired. Please log in again'}), 401)
+            return make_response(jsonify({'error': 'Signature expired. Please log in again'}), 401)
         except jwt.InvalidTokenError:
-            return make_response(jsonify({'message': 'Token is invalid!'}), 401)
+            return make_response(jsonify({'error': 'Token is invalid!'}), 401)
 
         return f(_center_id, *args, **kwargs)
 
