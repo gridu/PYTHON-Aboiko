@@ -9,17 +9,17 @@ from settings import TestConfig
 test_configs = 'settings.TestConfig'
 
 
-@pytest.fixture()
+@pytest.fixture(scope='session')
 def test_app():
     return create_app(test_configs)
 
 
-@pytest.fixture
+@pytest.fixture(scope='function')
 def client(test_app):
     return test_app.test_client()
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def session():
     engine = sqlalchemy.create_engine(TestConfig.SQLALCHEMY_DATABASE_URI)
     return scoped_session(sessionmaker(bind=engine))
