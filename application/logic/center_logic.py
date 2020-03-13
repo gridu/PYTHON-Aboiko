@@ -67,8 +67,8 @@ def add_center(_login, _password, _address):
     :param _address     Address of the center to register
     :return:            200 on successful register, 409 if center exists
     """
-    existing_center = find_by_login(_login)
-    if existing_center is not None:
+
+    if does_exist(_login):
         msg = 'Center with {} login already exists'.format(_login)
         return make_response(jsonify({"error": msg}), 409)
     new_center = Center(login=_login, password=generate_hash(_password), address=_address)
