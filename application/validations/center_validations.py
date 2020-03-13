@@ -2,7 +2,7 @@ from application.models.center import Center
 from application.util import verify_hash
 
 
-# function that returns True center exists
+# function that returns True if center exists
 def does_exist(_login):
     center = find_by_login(_login)
     return center is not None

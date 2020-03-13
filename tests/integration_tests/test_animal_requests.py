@@ -1,40 +1,8 @@
-from collections import namedtuple
-from application.util import generate_hash
-from hmac import compare_digest
-
+from tests.conftest import get_test_token
 from tests.test_data import *
 
 
-def get_test_token(client):
-    response = client.get("/login", json={"login": test_login, "password": test_password})
-    return response.headers['x-access-token']
-
-
-def test_get_centers_unauth(client):
-    response = client.get("/centers")
-    assert response.status_code == 200
-
-
-def test_get_center(client):
-    response = client.get("/centers/1")
-    assert response.status_code == 200
-
-
-def test_register(client, session):
-    response = client.post("/register", json={"login": test_login_register,
-                                              "password": test_password_register,
-                                              "address": test_address})
-    assert response.status_code == 201
-    result = session.execute("select * from center where login = :value", {'value': test_login_register})
-    Record = namedtuple('Record', result.keys())
-    records = [Record(*r) for r in result.fetchall()]
-    r = records[0]
-    assert r.login == test_login_register
-    assert r.address == test_address
-    compare_digest(r.password, generate_hash(test_password_register))
-
-
-def test_get_animals(client):
+def test_get_animals(client, session):
     animals_response = client.get("/animals", headers={'x-access-token': 'wrong_value'})
     assert animals_response.json['error'] == 'Token is invalid!'
     assert animals_response.status_code == 401
@@ -45,14 +13,22 @@ def test_get_animals(client):
 
     token = get_test_token(client)
     animals_response = client.get("/animals", headers={'x-access-token': token})
-    assert animals_response.status_code == 200
-    assert len(animals_response.get_json()['animals']) == 3
+
+    result = session.execute("select a.id, c.login "
+                             " from animal as a "
+                             " inner join center as c"
+                             " on a.center_id = c.id"
+                             " where c.login = :value "
+                             , {'value': test_login})
+    rows = result.fetchall()
+    assert animals_response.status_code == 200 and \
+           len(animals_response.get_json()['animals']) == len(rows)
 
 
 def test_post_animal(client, session):
     token = get_test_token(client)
 
-    # post an animal of not existin specie
+    # post an animal of not existing specie
     animals_response = client.post("/animals", headers={'x-access-token': token},
                                    json={"name": test_animal_name, "age": test_animal_age,
                                          "specie": "not exists"})
@@ -64,8 +40,16 @@ def test_post_animal(client, session):
                                          "specie": test_animal_specie})
     assert animals_response.status_code == 400
 
-    # correct request body
-    result = session.execute("select * from animal where name = :value", {'value': test_animal_name})
+    # correct request body; first check - animal is absent in db, second check - the animal was added
+
+    result = session.execute("select a.name, c.login "
+                             " from animal as a "
+                             " inner join center as c"
+                             " on a.center_id = c.id"
+                             " where c.login = :value0 "
+                             " and a.name = :value1"
+                             , {'value0': test_login,
+                                'value1': test_animal_name})
     rows = result.fetchall()
     assert len(rows) == 0
 
@@ -75,11 +59,19 @@ def test_post_animal(client, session):
     assert animals_response.status_code == 201
 
     # get just added animal from database with raw SQL query
-    result = session.execute("select * from animal where name = :value", {'value': test_animal_name})
-    rows = result.fetchall()
-    assert rows[0].age == test_animal_age and \
-           rows[0].specie == test_animal_specie and \
-           rows[0].name == test_animal_name
+    result = session.execute("select a.name, a.age, a.specie, c.login "
+                             " from animal as a "
+                             " inner join center as c"
+                             " on a.center_id = c.id"
+                             " where c.login = :value0 "
+                             " and a.name = :value1"
+                             , {'value0': test_login,
+                                'value1': test_animal_name})
+    row = result.first()
+    assert row.age == test_animal_age and \
+           row.specie == test_animal_specie and \
+           row.name == test_animal_name and \
+           row.login == test_login
 
     # post already existing animal (retry the same request in the same test)
     animals_response = client.post("/animals", headers={'x-access-token': token},
@@ -143,4 +135,3 @@ def test_update_animal(client, session):
     assert name_before != rows[0].name \
            and age_before != rows[0].age \
            and specie_before != rows[0].specie
-
