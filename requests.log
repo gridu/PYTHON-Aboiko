@@ -102,3 +102,8 @@
 2020-03-09 20:42:13,043 Request type: POST; URL: http://127.0.0.1:5000/species; Center id: 2; Entity type: species; Entity id: 5
 2020-03-10 14:15:56,941 Request type: POST; URL: http://127.0.0.1:5000/register; Center id: 4; Entity type: centers; Entity id: 4
 2020-03-10 15:17:51,045 Request type: PUT; URL: http://127.0.0.1:5000/animals/4; Center id: 2; Entity type: animals; Entity id: 4
+2020-03-14 17:32:41,061 Request type: POST; URL: http://localhost/animals; Center id: 1; Entity type: animals; Entity id: 10
+2020-03-14 17:32:41,180 Request type: DELETE; URL: http://localhost/animals/3; Center id: 1; Entity type: animals; Entity id: 3
+2020-03-14 17:32:41,251 Request type: PUT; URL: http://localhost/animals/2; Center id: 1; Entity type: animals; Entity id: 2
+2020-03-14 17:32:41,307 Request type: POST; URL: http://localhost/register; Center id: 4; Entity type: centers; Entity id: 4
+2020-03-14 17:32:41,471 Request type: POST; URL: http://localhost/species; Center id: 1; Entity type: species; Entity id: 4

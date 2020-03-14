@@ -3,6 +3,7 @@ from functools import wraps
 
 import jwt
 from flask import request, jsonify, make_response
+from sqlalchemy.exc import SQLAlchemyError
 
 from application import db
 from application.validations.center_validations import find_by_login
@@ -53,8 +54,12 @@ def insert_request_access_to_db(_login):
     token_payload = generate_token_payload(_login)
     access_request = AccessRequest(center_id=token_payload[0],
                                    timestamp=token_payload[1])
-    db.session.add(access_request)
-    db.session.commit()
+    try:
+        db.session.add(access_request)
+        db.session.commit()
+        return "Transaction completed successfully"
+    except SQLAlchemyError:
+        return "ORM exception, transaction failed"
 
 
 def generate_token_payload(_login):
