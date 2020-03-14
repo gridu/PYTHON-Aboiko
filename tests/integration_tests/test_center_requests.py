@@ -12,7 +12,6 @@ def test_get_center(client):
     assert response.status_code == 200
 
 
-
 def test_register(client, session):
     response = client.post("/register", json={"login": test_login_register,
                                               "password": test_password_register,
@@ -22,4 +21,4 @@ def test_register(client, session):
     center = result.first()
     assert center.login == test_login_register
     assert center.address == test_address
-    verify_hash(center.password, generate_hash(test_password_register))
+    assert verify_hash(test_password_register, center.password) is True

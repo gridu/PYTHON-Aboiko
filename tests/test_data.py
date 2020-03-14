@@ -2,6 +2,8 @@ test_login_register = "Center23"
 test_password_register = "password23"
 test_address = "Berlin"
 
+not_existing_login = "John Doe"
+
 test_login = "Center1"
 test_password = "password1"
 test_animal_id_for_login =2
