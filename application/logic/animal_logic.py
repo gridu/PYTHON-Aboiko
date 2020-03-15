@@ -122,4 +122,5 @@ def get_all_animals_for_center(_center_id):
                             registered by its members
     :return:                JSON list with all animals
     """
-    return [make_json(animal) for animal in Animal.query.filter(Animal.center_id == _center_id)]
+    return [make_json(animal) for animal in Animal.query
+                                 .filter(Animal.center_id == _center_id)]

@@ -5,7 +5,7 @@ from flask import make_response, jsonify, Response
 from application import db
 from application.models.center import make_json, Center
 from application.util import generate_hash
-from application.validations.center_validations import does_exist, validate_credentials, find_by_login
+from application.validations.center_validations import does_exist, validate_credentials
 from application.authentification.auth_logic import get_token, insert_request_access_to_db
 
 

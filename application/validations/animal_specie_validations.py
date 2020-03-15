@@ -12,6 +12,7 @@ def is_center_id_valid(_center_id, animal):
     return animal.center_id == _center_id
 
 
+
 # check that animal instance with the same data is already inserted
 def is_there_exact_animal(_center_id, _name, _age, _specie):
     existing_animal = Animal.query.filter(Animal.center_id == _center_id) \

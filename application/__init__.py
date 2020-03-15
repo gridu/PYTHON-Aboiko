@@ -1,4 +1,6 @@
+import logging
 import os
+from logging import FileHandler
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -13,7 +15,7 @@ def create_app(configs_string):
     app.config.from_object(configs_string)
 
     db.init_app(app)
-    # setup_app_logging(app)
+    setup_app_logging(app)
     # setup_routes_logging()
 
     register_blueprints()
@@ -37,13 +39,12 @@ def register_blueprints():
 
 
 def setup_app_logging(app):
-    # log_handler_file = FileHandler('appevents.log')
-    # log_handler_file.setLevel(logging.INFO)
-    # app.logger.addHandler(log_handler_file)
-    # if not app.debug:
-    # logging.basicConfig(filename='appevents.log', level=logging.WARNING,
-    #                     format='%(levelname)s:%(message)s')
-    pass
+    log_handler_file = FileHandler('appevents.log')
+    log_handler_file.setLevel(logging.INFO)
+    app.logger.addHandler(log_handler_file)
+    if not app.debug:
+        logging.basicConfig(filename='appevents.log', level=logging.WARNING,
+                        format='%(levelname)s:%(message)s')
 
 # def setup_routes_logging():
 #     logger = logging.getLogger(__name__)

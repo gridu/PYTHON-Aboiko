@@ -43,12 +43,12 @@ def db_load_example_data(app, db):
             {
                 "name": "red fox",
                 "price": 120.55,
-                "description": "Angry tiger is afraid of her"
+                "description": "Lives in forests"
             },
             {
                 "name": "angry tiger",
                 "price": 9999999.99,
-                "description": "very angry"
+                "description": "Very angry"
             },
             {
                 "name": "giant lion",
@@ -73,6 +73,7 @@ def db_load_example_data(app, db):
                 )
             db.session.add(c)
 
+        # iterate over the SPECIE structure and populate the database
         for specie in SPECIE:
             s = Specie(name=specie.get("name"), price=specie.get("price"),
                        description=specie.get("description"))

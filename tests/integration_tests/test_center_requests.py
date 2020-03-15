@@ -1,4 +1,4 @@
-from application.util import generate_hash, verify_hash
+from application.util import verify_hash
 from tests.test_data import *
 
 

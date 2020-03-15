@@ -17,6 +17,7 @@ def get_animals(_center_id):
     return jsonify({'animals': get_all_animals_for_center(_center_id)})
 
 
+
 @animals.route('/animals', methods=['POST'])
 @token_required
 @expects_json(post_animal_schema)

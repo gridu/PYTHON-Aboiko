@@ -1,7 +1,7 @@
 *.db
-*.log.
+*.log
 ./venv/
 ./.idea/
-/__pyache__/
+__pyache__/
 *.pytest_cache
 
