@@ -14,4 +14,4 @@ The project structure. Tests folder:
 
 The results of tests run:
 
-![Pytest results](https://github.com/gridu/PYTHON-Aboiko/blob/develop/miscellaneous/images/tests_results.png)
+![Pytest results](https://github.com/gridu/PYTHON-Aboiko/blob/develop/miscellaneous/images/test_results.png)
