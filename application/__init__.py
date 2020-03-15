@@ -24,13 +24,13 @@ def create_app(configs_string):
 
     # deleting pre-existing database for the tests in case test configuration is passed as a parameter
     if configs_string == 'settings.TestConfig':
-        with app.app_context():
-            if os.path.exists("../tests/test.db"):
-                os.remove("../tests/test.db")
+        if os.path.exists("../tests/test.db"):
+            os.remove("../tests/test.db")
 
     # creating and populating a database with sample data
-    db.create_all()
-    db_load_example_data(app, db)
+    with app.app_context():
+        db.create_all()
+        db_load_example_data(app, db)
 
     return app
 
