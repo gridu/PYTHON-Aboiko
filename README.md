@@ -6,7 +6,12 @@ mocking functions, pytest were used on the project.
 
 The project structure. Application folder:
 
+![alt text](https://github.com/gridu/PYTHON-Aboiko/blob/develop/miscellaneous/images/app_structure.png)
     
 The project structure. Tests folder:
 
+![alt text](https://github.com/gridu/PYTHON-Aboiko/blob/develop/miscellaneous/images/tests_structure.png)
 
+The results of tests run:
+
+![Pytest results](https://github.com/gridu/PYTHON-Aboiko/blob/develop/miscellaneous/images/tests_results.png)
