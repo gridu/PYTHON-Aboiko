@@ -10,32 +10,33 @@ mocking functions, pytest were used on the project.
 brew install python3
 ```
 2) Clone a project from git repository:
+```
 git clone https://github.com/gridu/PYTHON-Aboiko
-
+```
 The project will be cloned to the directory you run this command from.
 
 3) To separate all project dependencies from OS environment create a virtual environment for the project.
 Install a tool to create a virtual environment:
-
+```
 pip3 install virtualenv
-
+```
 4) To create a directory for virtual environment enter the root project directory and run a command:
-
+```
 virtualenv venv
-
+```
 5) Activate a virtual environment:
-
+```
 source venv/bin/activate
-
+```
 6) Collect and install the project dependencies:
-
+```
 pi3 install -r requirements.txt
-
+```
 ## Run project and use API
 To run a project type:
-
+```
 python run.py
-
+```
 from a root project directory
 
 Now you can send requests on a localhost with 5000 port configured by default (http://127.0.0.1:5000/):
