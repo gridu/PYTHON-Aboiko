@@ -4,7 +4,7 @@ from flask_expects_json import expects_json
 from application.custom_logger import log_post_requests
 from application.logic.specie_logic import get_all_species, get_specie, add_specie
 from application.schemas import post_specie_schema
-from authentification.auth_logic import token_required
+from application.authentification.auth_logic import token_required
 
 species = Blueprint('species', __name__)
 

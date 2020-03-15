@@ -5,8 +5,8 @@ from flask import make_response, jsonify, Response
 from application import db
 from application.models.center import make_json, Center
 from application.util import generate_hash
-from application.validations.center_validations import does_exist, validate_credentials, find_by_login
-from authentification.auth_logic import get_token, insert_request_access_to_db
+from application.validations.center_validations import does_exist, validate_credentials
+from application.authentification.auth_logic import get_token, insert_request_access_to_db
 
 
 def login_center(_login, _password):
@@ -67,8 +67,8 @@ def add_center(_login, _password, _address):
     :param _address     Address of the center to register
     :return:            200 on successful register, 409 if center exists
     """
-    existing_center = find_by_login(_login)
-    if existing_center is not None:
+
+    if does_exist(_login):
         msg = 'Center with {} login already exists'.format(_login)
         return make_response(jsonify({"error": msg}), 409)
     new_center = Center(login=_login, password=generate_hash(_password), address=_address)

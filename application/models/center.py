@@ -7,8 +7,7 @@ def make_json(self):
     return {
         'id': self.id,
         'login': self.login,
-        'address': self.address,
-        'pass': self.password
+        'address': self.address
     }
 
 
@@ -29,7 +28,6 @@ class Center(db.Model):
     def __repr__(self):
         center_object = {
             'login': self.login,
-            'address': self.address,
-            # 'animals': self.animals
+            'address': self.address
         }
         return json.dumps(center_object)

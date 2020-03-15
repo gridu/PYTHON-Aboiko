@@ -12,6 +12,8 @@ register_const = "register"
 
 
 def log_put_delete_requests(request_type, request_url, center_id, path):
+    # log put or delete requests to reguests.log file
+
     entity_type = path.split("/")[1]
     entity_id = path.split("/")[2]
     logger.info(
@@ -23,6 +25,8 @@ def log_put_delete_requests(request_type, request_url, center_id, path):
 
 
 def log_post_requests(request_type, request_url, center_id, path, generated_id):
+    # log post requests to reguests.log file
+
     entity_type = path.split("/")[1]
     if entity_type == register_const:
         entity_type = center_const

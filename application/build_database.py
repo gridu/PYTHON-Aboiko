@@ -1,16 +1,7 @@
-
-from sqlalchemy import func
-
 from application.models.animal import Animal
 from application.models.center import Center
 from application.models.specie import Specie
 from application.util import generate_hash
-
-
-# class DB:
-#     max_animal_id = 0
-#     max_center_id = 0
-#     max_specie_id = 0
 
 
 def db_load_example_data(app, db):
@@ -52,12 +43,12 @@ def db_load_example_data(app, db):
             {
                 "name": "red fox",
                 "price": 120.55,
-                "description": "Angry tiger is afraid of her"
+                "description": "Lives in forests"
             },
             {
                 "name": "angry tiger",
                 "price": 9999999.99,
-                "description": "very angry"
+                "description": "Very angry"
             },
             {
                 "name": "giant lion",
@@ -82,17 +73,11 @@ def db_load_example_data(app, db):
                 )
             db.session.add(c)
 
+        # iterate over the SPECIE structure and populate the database
         for specie in SPECIE:
             s = Specie(name=specie.get("name"), price=specie.get("price"),
                        description=specie.get("description"))
             db.session.add(s)
 
         db.session.commit()
-        # init_consts(db)
-
-
-# def init_consts(db):
-#     DB.max_animal_id = db.session.query(func.max(Animal.id)).scalar()
-#     DB.max_center_id = db.session.query(func.max(Center.id)).scalar()
-#     DB.max_specie_id = db.session.query(func.max(Center.id)).scalar()
 

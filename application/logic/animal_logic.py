@@ -42,6 +42,7 @@ def get_animal(_center_id, _animal_id):
                             is no such an animal
     """
     animal = Animal.query.get(_animal_id)
+
     if animal is None:
         msg = 'you\'re looking for an animal which doesn\'t exist'
         return make_response(jsonify({"error": msg}), 404)
@@ -121,4 +122,5 @@ def get_all_animals_for_center(_center_id):
                             registered by its members
     :return:                JSON list with all animals
     """
-    return [make_json(animal) for animal in Animal.query.filter(Animal.center_id == _center_id)]
+    return [make_json(animal) for animal in Animal.query
+                                 .filter(Animal.center_id == _center_id)]
