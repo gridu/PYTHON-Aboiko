@@ -6,8 +6,9 @@ mocking functions, pytest were used on the project.
 
 ## Setup and configure
 1) Python 3 is required to properly run the project. You can install it on MacOS with brew package manager:
+```
 brew install python3
-
+```
 2) Clone a project from git repository:
 git clone https://github.com/gridu/PYTHON-Aboiko
 
