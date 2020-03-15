@@ -17,7 +17,7 @@ def test_register(client, session):
                                               "password": test_password_register,
                                               "address": test_address})
     assert response.status_code == 201
-    result = session.execute("select * from center where login = :value", {'value': test_login_register})
+    result = session.execute("SELECT * FROM center WHERE login = :value", {'value': test_login_register})
     center = result.first()
     assert center.login == test_login_register
     assert center.address == test_address

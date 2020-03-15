@@ -21,6 +21,8 @@ def client(test_app):
 
 @pytest.fixture(scope='session')
 def session():
+    # obtaining scoped_session object for plain SQL queries
+
     engine = sqlalchemy.create_engine(TestConfig.SQLALCHEMY_DATABASE_URI)
     return scoped_session(sessionmaker(bind=engine))
 
