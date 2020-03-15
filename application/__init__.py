@@ -16,7 +16,6 @@ def create_app(configs_string):
 
     db.init_app(app)
     setup_app_logging(app)
-    # setup_routes_logging()
 
     register_blueprints()
     # deleting pre-existing database for the tests in case test configuration is passed as a parameter
@@ -45,11 +44,3 @@ def setup_app_logging(app):
     if not app.debug:
         logging.basicConfig(filename='appevents.log', level=logging.WARNING,
                         format='%(levelname)s:%(message)s')
-
-# def setup_routes_logging():
-#     logger = logging.getLogger(__name__)
-#     app_logger = logging.FileHandler('requests.log')
-#     logger.setLevel(logging.INFO)
-#     format_custom_logger = logging.Formatter("%(asctime)s %(message)s")
-#     app_logger.setFormatter(format_custom_logger)
-#     logger.addHandler(app_logger)
