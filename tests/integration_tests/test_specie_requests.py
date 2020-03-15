@@ -4,7 +4,7 @@ from tests.test_data import *
 
 def test_get_specie(client, session):
     species_response = client.get("/species/" + str(test_specie_id))
-    result = session.execute("select * from specie where id = :value", {'value': test_specie_id})
+    result = session.execute("SELECT * FROM specie WHERE id = :value", {'value': test_specie_id})
     row = result.first()
     assert species_response.get_json()['name'] == row.name and \
            species_response.get_json()['price'] == row.price and \
@@ -29,7 +29,7 @@ def test_get_species(client, session):
     token = get_test_token(client)
     species_response = client.get("/species", headers={'x-access-token': token})
 
-    result = session.execute("select name from specie")
+    result = session.execute("SELECT name FROM specie")
     rows = result.fetchall()
     assert species_response.status_code == 200 and \
            len(species_response.get_json()['species']) == len(rows)
@@ -39,9 +39,9 @@ def test_post_specie(client, session):
     token = get_test_token(client)
 
     # check that specie doesn't exist yet
-    result = session.execute("select name, price, description from specie"
-                             " where name = :value0 and "
-                             " price = :value1 and "
+    result = session.execute("SELECT name, price, description FROM specie"
+                             " WHERE name = :value0 AND "
+                             " price = :value1 AND "
                              " description = :value2"
                              , {'value0': test_specie_name_for_post,
                                 'value1': test_specie_price_for_post,
@@ -54,9 +54,9 @@ def test_post_specie(client, session):
                                    json={"name": test_specie_name_for_post, "price": test_specie_price_for_post,
                                          "description": test_specie_description_for_post})
     assert species_response.status_code == 201
-    result = session.execute("select name, price, description from specie"
-                             " where name = :value0 and "
-                             " price = :value1 and "
+    result = session.execute("SELECT name, price, description FROM specie"
+                             " WHERE name = :value0 AND "
+                             " price = :value1 AND "
                              " description = :value2"
                              , {'value0': test_specie_name_for_post,
                                 'value1': test_specie_price_for_post,

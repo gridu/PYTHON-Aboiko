@@ -14,11 +14,11 @@ def test_get_animals(client, session):
     token = get_test_token(client)
     animals_response = client.get("/animals", headers={'x-access-token': token})
 
-    result = session.execute("select a.id, c.login "
-                             " from animal as a "
-                             " inner join center as c"
-                             " on a.center_id = c.id"
-                             " where c.login = :value "
+    result = session.execute("SELECT a.id, c.login "
+                             " FROM animal AS a "
+                             " INNER JOIN  center AS c"
+                             " ON a.center_id = c.id"
+                             " WHERE  c.login = :value "
                              , {'value': test_login})
     rows = result.fetchall()
     assert animals_response.status_code == 200 and \
@@ -42,12 +42,12 @@ def test_post_animal(client, session):
 
     # correct request body; first check - animal is absent in db, second check - the animal was added
 
-    result = session.execute("select a.name, c.login "
-                             " from animal as a "
-                             " inner join center as c"
-                             " on a.center_id = c.id"
-                             " where c.login = :value0 "
-                             " and a.name = :value1"
+    result = session.execute("SELECT a.name, c.login "
+                             " FROM animal AS a "
+                             " INNER JOIN  center AS c"
+                             " ON a.center_id = c.id"
+                             " WHERE  c.login = :value0 "
+                             " AND a.name = :value1"
                              , {'value0': test_login,
                                 'value1': test_animal_name})
     rows = result.fetchall()
@@ -58,13 +58,13 @@ def test_post_animal(client, session):
                                          "specie": test_animal_specie})
     assert animals_response.status_code == 201
 
-    # get just added animal from database with raw SQL query
-    result = session.execute("select a.name, a.age, a.specie, c.login "
-                             " from animal as a "
-                             " inner join center as c"
-                             " on a.center_id = c.id"
-                             " where c.login = :value0 "
-                             " and a.name = :value1"
+    # get just added animal FROM database with raw SQL query
+    result = session.execute("SELECT a.name, a.age, a.specie, c.login "
+                             " FROM animal AS a "
+                             " INNER JOIN  center AS c"
+                             " ON a.center_id = c.id"
+                             " WHERE  c.login = :value0 "
+                             " AND a.name = :value1"
                              , {'value0': test_login,
                                 'value1': test_animal_name})
     row = result.first()
@@ -83,14 +83,14 @@ def test_post_animal(client, session):
 def test_get_animal_for_the_center(client, session):
     token = get_test_token(client)
     animals_response = client.get("/animals/" + str(test_animal_id_for_login), headers={'x-access-token': token})
-    result = session.execute("select * from animal where id = :value", {'value': test_animal_id_for_login})
+    result = session.execute("SELECT * FROM animal WHERE  id = :value", {'value': test_animal_id_for_login})
     rows = result.fetchall()
     assert animals_response.get_json()['name'] == rows[0].name and \
            animals_response.get_json()['age'] == rows[0].age and \
            animals_response.get_json()['specie'] == rows[0].specie and \
            animals_response.status_code == 200
 
-    # trying to get an animal from another center collection
+    # trying to get an animal FROM another center collection
     animals_response = client.get("/animals/4", headers={'x-access-token': token})
     assert animals_response.status_code == 409 and \
            animals_response.json['error'] == 'you\'re trying to view the animal which isn\'t related to your id'
@@ -106,7 +106,7 @@ def test_delete_animal(client, session):
     animals_response = client.delete("/animals/3", headers={'x-access-token': token})
     assert animals_response.status_code == 200 and \
            animals_response.json['success'] == "an animal deleted successfully"
-    result = session.execute("select * from animal where id = :value", {'value': 3})
+    result = session.execute("SELECT * FROM animal WHERE  id = :value", {'value': 3})
     rows = result.fetchall()
     assert len(rows) == 0
 
@@ -121,7 +121,7 @@ def test_delete_animal(client, session):
 
 def test_update_animal(client, session):
     token = get_test_token(client)
-    result = session.execute("select * from animal where id = :value", {'value': test_animal_id_for_login})
+    result = session.execute("SELECT * FROM animal WHERE  id = :value", {'value': test_animal_id_for_login})
     rows = result.fetchall()
     name_before = rows[0].name
     age_before = rows[0].age
@@ -130,7 +130,7 @@ def test_update_animal(client, session):
                                                                              "age": test_animal_age,
                                                                              "specie": test_animal_specie},
                           headers={'x-access-token': token})
-    result = session.execute("select * from animal where id = :value", {'value': test_animal_id_for_login})
+    result = session.execute("SELECT * FROM animal WHERE  id = :value", {'value': test_animal_id_for_login})
     rows = result.fetchall()
     assert name_before != rows[0].name \
            and age_before != rows[0].age \

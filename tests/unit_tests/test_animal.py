@@ -30,12 +30,12 @@ def test_delete_animal(test_app, mocker):
     with test_app.app_context():
         response = delete_animal(test_login, test_animal_id_not_related_for_login)
     assert response.status_code == 200 and \
-           response.json["success"] == "an animal deleted successfully"
+        response.json["success"] == "an animal deleted successfully"
 
     with test_app.app_context():
         response = delete_animal(test_login, not_existing_animal_id)
     assert response.status_code == 404 and \
-           response.json["error"] == "you\'re trying to delete an animal which doesn\'t exist"
+        response.json["error"] == "you\'re trying to delete an animal which doesn\'t exist"
 
 
 def test_update_animal(test_app, mocker):
@@ -44,9 +44,9 @@ def test_update_animal(test_app, mocker):
     with test_app.app_context():
         response = update_animal(test_animal_data_exists)
     assert response.status_code == 200 and \
-           response.json["success"] == "an animal updated successfully"
+        response.json["success"] == "an animal updated successfully"
 
     with test_app.app_context():
         response = update_animal(test_animal_not_existing)
     assert response.status_code == 404 and \
-           response.json["error"] == "you\'re trying to update an animal which doesn\'t exist"
+        response.json["error"] == "you\'re trying to update an animal which doesn\'t exist"

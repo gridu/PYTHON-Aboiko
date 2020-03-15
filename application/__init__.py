@@ -11,19 +11,25 @@ app = Flask(__name__)
 from application.build_database import db_load_example_data
 
 
+# create application instance with application factoy pattern
 def create_app(configs_string):
     app.config.from_object(configs_string)
-
     db.init_app(app)
-    setup_app_logging(app)
-    # setup_routes_logging()
 
+    # configure logging of application events
+    setup_app_logging(app)
+
+    # importing and registering app blueprints
     register_blueprints()
+
     # deleting pre-existing database for the tests in case test configuration is passed as a parameter
-    with app.app_context():
-        if os.path.exists("../tests/test.db"):
-            os.remove("../tests/test.db")
-        db.create_all()
+    if configs_string == 'settings.TestConfig':
+        with app.app_context():
+            if os.path.exists("../tests/test.db"):
+                os.remove("../tests/test.db")
+
+    # creating and populating a database with sample data
+    db.create_all()
     db_load_example_data(app, db)
 
     return app
@@ -44,12 +50,4 @@ def setup_app_logging(app):
     app.logger.addHandler(log_handler_file)
     if not app.debug:
         logging.basicConfig(filename='appevents.log', level=logging.WARNING,
-                        format='%(levelname)s:%(message)s')
-
-# def setup_routes_logging():
-#     logger = logging.getLogger(__name__)
-#     app_logger = logging.FileHandler('requests.log')
-#     logger.setLevel(logging.INFO)
-#     format_custom_logger = logging.Formatter("%(asctime)s %(message)s")
-#     app_logger.setFormatter(format_custom_logger)
-#     logger.addHandler(app_logger)
+                            format='%(levelname)s:%(message)s')
