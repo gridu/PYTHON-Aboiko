@@ -82,6 +82,15 @@ Tests folder:
 
 ![alt text](https://github.com/gridu/PYTHON-Aboiko/blob/develop/miscellaneous/images/tests_structure.png)
 
+## Run tests
+To run all tests please perform the next command from /tests directory:
+```
+pytest
+```
+To run single test file specify the path to this file as with command pytest (test_center.py as an example):
+```
+pytest tests/unit_tests/test_center.py
+```
 The results of tests run:
 
 ![Pytest results](https://github.com/gridu/PYTHON-Aboiko/blob/develop/miscellaneous/images/test_results.png)
