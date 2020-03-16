@@ -1,8 +1,13 @@
 # REST API with Flask
 
-Created REST API for Animals Sales Web Project.
-Flask, SQLite, SQLAlchemy, configparser and logging, jwt tokens, json validations, password hashing,
-mocking functions, pytest were used on the project.
+The project delivers REST API for Animals Sales. 
+Python3 and Flask microframework were chosen as the main tools for the project.
+The data persists in SQLite. SQLAlchemy as ORM and plain SQL queries are used for the Data Access layer of the project.
+Configparser used to read configuration data from .ini file.
+All POST, PUT and DELETE requests are logged in separate file; application logs stored in a dedicated file for it.
+Jwt tokens are used for security and identifying users requests.
+To validate requests body "flask expect-json" library is used. Hashing algoithm HSA-256 utilized to store user passwords.
+Pytest-mocker library was chosen to conduct unit-tests.
 
 ## Setup and configure
 1) Python 3 is required to properly run the project. You can install it on MacOS with brew package manager:
